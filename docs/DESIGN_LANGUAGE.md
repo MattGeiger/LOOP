@@ -33,6 +33,7 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | Performance history | `list-clock` |
 | Update Software | `refresh-cw` |
 | Start fullscreen playback | `expand` |
+| Version (opens Release Notes) | `rocket` |
 | Help | `circle-question-mark` |
 | About | `info` |
 | Settings | `settings` |
@@ -83,13 +84,14 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | Update all (N) | `download` |
 | Restart now | `power` |
 | Cancel | `x` |
-| Done | `x` |
+| Done | `check` |
 
 ### Everywhere
 
 | Control | Icon |
 | --- | --- |
-| Close, Cancel, Done | `x` |
+| Close, Cancel | `x` |
+| Done (finishes a task) | `check` |
 | Back / Next | `arrow-left` / `arrow-right` |
 | Source Code on GitHub | `github` |
 | A button at work | `loader-circle` (spinning) |
