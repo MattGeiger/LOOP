@@ -1,8 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Temple Consulting, LLC. logo — dark-background variant (white fill).
-     Paired with temple-logo-light.svg via a <picture> element in README.md so
-     GitHub serves the correct fill per the viewer's color scheme. Source of
-     truth for the adaptive single-file version is docs/Temple_Icon_System.svg. -->
 <svg id="Icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 512 512">
   <g id="Logo" fill="#ffffff">
     <polygon id="Foundation" points="45.5 281.5 0 324.6 0 348.1 226.8 504.8 286.6 504.8 512 345.2 512 322.5 465.8 281.5 442.3 289.3 273.8 343.8 240.1 343.8 70.2 289.3 45.5 281.5"/>

@@ -1,3 +1,14 @@
+<p align="center">
+  <a href="https://templepdx.com">
+    <picture>
+      <source media="(prefers-color-scheme: dark)" srcset="assets/temple/temple-logo-dark.svg">
+      <img alt="Temple Consulting, LLC." src="assets/temple/temple-logo-light.svg" width="96" height="96">
+    </picture>
+  </a>
+</p>
+
+<p align="center"><em>A creation of <a href="https://templepdx.com">Temple Consulting, LLC.</a></em></p>
+
 # LOOP — Local Outreach on Pi
 
 LOOP turns a Raspberry Pi and a TV into a dependable outreach display. The Pi plays your organization's
@@ -26,6 +37,26 @@ LOOP is part of the same family as LOTTO and FEED, by Matt Geiger, Temple Consul
 - **Read-only operation.** The OS runs read-only so power cuts cannot corrupt it; videos, state and history live
   on the USB drive. **Update Software** handles the read/write window with the administrator password.
 
+## Screens
+
+What viewers see between videos: the idle screen, made from the profile's picture (LOOP's default look shown).
+
+![LOOP's default idle screen on a TV](docs/screenshots/idle-screen.jpg)
+
+Staff run the display from **Staff Display Tools**, over Raspberry Pi Connect, with the mouse only:
+
+![Staff Display Tools: now showing, up next, and six large controls](docs/screenshots/staff-display-tools.png)
+
+| LOOP Setup, with contrast-checked colors | Burn-in test before going live |
+|---|---|
+| ![The Colors step of LOOP Setup, suggesting readable shades beside a live preview](docs/screenshots/setup-wizard-colors.png) | ![Setup and Burn-in: test length and limits for temperature, memory and dropped frames](docs/screenshots/burn-in.png) |
+
+| Update Software around read-only mode | Help with screenshots |
+|---|---|
+| ![Update Software: four steps, with updates grouped by system, VLC, Pi Connect and Chromium](docs/screenshots/update-software.png) | ![A Help guide for changing the video, with steps and a contents list](docs/screenshots/help.png) |
+
+The pictures come from the Docker screenshot bench (`sim/docker`) with LOOP's default profile.
+
 ## Configuration
 
 Two JSON files, read by [src/loop_profile.py](src/loop_profile.py), which lists every setting and its default:
@@ -46,11 +77,11 @@ organization name, link or hostname is written into `src/`.
 | `src/` | Player, Performance History, Staff Display Tools, admin windows, Help guides, privileged helper, setup scripts |
 | `profiles/wth/` | William Temple House profile and branding assets (not open source; see TRADEMARKS.md) |
 | `profiles/default/` | LOOP's default profile: TemplePDX.com branding (Twilight Ember), used when no organization profile is installed, plus an example site file |
-| `assets/temple/` | Temple Consulting logo for the About window |
+| `assets/temple/` | Temple Consulting logos for the About window and this README |
 | `packaging/` | Debian package and Pi Imager image builds |
 | `sim/` | Test benches: Docker window screenshots and Raspberry Pi OS virtual machines |
 | `tests/` | Unit tests and a Staff Tools window smoke test (no Pi or GTK needed); run on every push |
-| `docs/` | Roadmap and the hardware validation checklist |
+| `docs/` | Roadmap, the hardware validation checklist, and the README screenshots |
 
 ## Requirements
 
