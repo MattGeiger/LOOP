@@ -16,7 +16,7 @@ Switching: a new video is queued behind the current one, so it starts when the c
 finishes; nothing is cut off mid-ad. Switches away from a missing file or from the idle image
 happen at once. VLC is never restarted to switch, so the screen doesn't flash.
 
-Software updates: while Staff Display Tools has the Pi in read/write mode for updates
+Software updates: while Staff Display Tools has the Pi in Read/write Mode for updates
 (loop_state.video_held()), the branded idle screen shows instead of video and Staff Display
 Tools is opened on its Update Software view, so the screen never runs ads unprotected.
 

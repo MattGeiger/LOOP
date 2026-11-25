@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
-"""Admin windows for Staff Display Tools: Update Software, Setup Mode (burn-in test) and Go Live.
+"""Admin windows for Staff Display Tools: Update Software, Setup Mode (burn-in test) and going live.
 
 Anyone can open these windows and read them; every action that changes the system first asks
 for the administrator password in Raspberry Pi OS's own dialog (pkexec + polkit policy
@@ -20,6 +20,7 @@ from datetime import datetime
 from gi.repository import GLib, Gtk
 
 import burnin_eval
+import ui_icons
 import ui_screen
 import loop_state
 
@@ -49,17 +50,30 @@ button.link-btn { background: none; border: none; box-shadow: none; padding: 4px
 button.link-btn label { color: @text_muted@; font-size: 11pt; }
 button.link-btn.confirm label { color: @danger@; }
 button.link-btn { min-height: 24px; min-width: 24px; }  /* WCAG 2.2 target size */
+.step { padding: 5px 14px; border-radius: 999px; border: 1px solid alpha(@border@, 0.85);
+        background: none; box-shadow: none; text-shadow: none; }
+button.step { min-height: 24px; min-width: 24px; }  /* WCAG 2.2 target size */
+.step label { font-size: 11pt; color: @text_muted@; }
+.step image.lucide { color: @text_muted@; }
+.step.step-active { background-color: @accent@; border-color: @accent_deep@; }
+.step.step-active label, .step.step-active image.lucide { color: @on_accent@; }
+.step.step-done { border-color: alpha(@ok@, 0.6); }
+.step.step-done label, .step.step-done image.lucide { color: @ok@; }
+button.step:hover { border-color: @border_hover@; }
+button.step.step-active:hover { border-color: @accent_deep@; }
+.step.step-muted { opacity: 0.45; }
+button.step.step-muted:hover { border-color: alpha(@border@, 0.85); }
 """
 
 STORAGE_WARNING = ("Always switch back to Read-only Mode before the video resumes. Without it, losing "
                    "power (a pulled plug or an outage) can corrupt the storage card, and the display "
                    "may not start again until it is repaired.")
-RW_TEST_WARNING = ("Read/Write mode is not recommended. If the Pi loses power during the test, the storage "
+RW_TEST_WARNING = ("Read/write Mode is not recommended. If the Pi loses power during the test, the storage "
                    "card can be corrupted and the display may not start again until it is repaired. "
                    "The test also won't show how the display behaves as it will run in service.")
 GROUPS = [("system", "Raspberry Pi OS & security"), ("vlc", "VLC video player"),
           ("connect", "Raspberry Pi Connect"), ("chromium", "Chromium browser")]
-UPDATE_STEPS = ["1  Read/Write", "2  Updates", "3  Read-only", "4  Video back"]
+UPDATE_STEPS = ["Read/write Mode", "Check for updates", "Set Read-only Mode", "Return to video"]
 PASSWORD_MSG = {126: "The password window was closed. Nothing was changed.",
                 127: "The password was not accepted, or the password window could not open. Nothing was changed."}
 
@@ -207,12 +221,7 @@ class AdminWindow(Gtk.Window):
             for c in box.get_children():
                 c.destroy()
         for i, name in enumerate(steps or []):
-            pill = _label(name, "step", wrap=False)
-            if active is not None and i < active:
-                pill.get_style_context().add_class("step-done")
-            elif i == active:
-                pill.get_style_context().add_class("step-active")
-            self.steps.pack_start(pill, False, False, 0)
+            self.steps.pack_start(self.step_pill(i, name, active), False, False, 0)
         self.steps.set_visible(bool(steps))
         self.body.pack_start(_label(title, "step-title", weight="bold"), False, False, 0)
         if text:
@@ -228,7 +237,7 @@ class AdminWindow(Gtk.Window):
             b = Gtk.Button()
             b.get_style_context().add_class("link-btn")
             b.set_relief(Gtk.ReliefStyle.NONE)
-            b.add(_label(text_, "hint", wrap=False))
+            b.add(ui_icons.IconLabel(text_, "hint"))
             b.connect("clicked", lambda btn, cb=cb: cb(btn))
             linkbox.pack_start(b, False, False, 0)
         self.foot.pack_start(linkbox, False, False, 0)
@@ -237,8 +246,7 @@ class AdminWindow(Gtk.Window):
             b.get_style_context().add_class("pill")
             if kind == "ghost":
                 b.get_style_context().add_class("ghost")
-            b.add(Gtk.Label())
-            b.get_child().set_markup(_bold(text_))
+            b.add(ui_icons.IconLabel(text_, markup=_bold(text_)))
             b.orig_text = text_
             b.connect("clicked", lambda btn, cb=cb, bt=busy_text: self.press(btn, cb, bt))
             self.foot.pack_end(b, False, False, 0)
@@ -246,6 +254,18 @@ class AdminWindow(Gtk.Window):
         self.steps.set_visible(bool(steps))
         self.say(msg)
         ui_screen.fit(self)
+
+    def step_pill(self, i, name, active):
+        """A step marker: done, current or still to come. Here (Update Software, Setup & Burn-in) it only shows
+        progress; LOOP Setup overrides it with clickable steps."""
+        pill = Gtk.Box()
+        pill.get_style_context().add_class("step")
+        if active is not None and i < active:
+            pill.get_style_context().add_class("step-done")
+        elif i == active:
+            pill.get_style_context().add_class("step-active")
+        pill.add(ui_icons.IconLabel(name, size="pill"))
+        return pill
 
     def say(self, text):
         self.msg.set_markup(_bold(text) if text else "")
@@ -262,6 +282,7 @@ class AdminWindow(Gtk.Window):
         self.busy = True
         if busy_text:
             btn.get_child().set_markup(_bold(busy_text))
+            ui_icons.set_busy(btn, True)
         for b in self.foot.get_children():
             if b is not btn and isinstance(b, Gtk.Button):
                 b.set_sensitive(False)
@@ -276,6 +297,7 @@ class AdminWindow(Gtk.Window):
             b.set_sensitive(True)
             if hasattr(b, "orig_text"):
                 b.get_child().set_markup(_bold(b.orig_text))
+                ui_icons.set_busy(b, False)
         self.say(message)
 
     def twice(self, btn, first_text, warn_text, then):
@@ -369,7 +391,7 @@ class UpdateWindow(AdminWindow):
         if stage == "post_update":
             return self.p_post(note)
         if stage == "ro_on_pending":
-            return self.restart_page("Read-only mode is set", "After the restart the display is protected "
+            return self.restart_page("Read-only Mode is set", "After the restart the display is protected "
                                      "again and the video resumes by itself.", UPDATE_STEPS, 3)
         return self.page(f"Unknown step: {stage}", buttons=[("Close", self.destroy, "ghost", "")])
 
@@ -383,9 +405,9 @@ class UpdateWindow(AdminWindow):
     def p_intro(self):
         if loop_state.ro_now():
             self.page("Switch out of Read-only Mode",
-                      "Updates can only be saved while read-only mode is off. The display will switch to "
-                      "Read/Write mode and restart. The video stays off until the updates are finished and "
-                      "read-only mode is back on. The idle screen shows instead.\n\n"
+                      "Updates can only be saved while Read-only Mode is off. The display will switch to "
+                      "Read/write Mode and restart. The video stays off until the updates are finished and "
+                      "Read-only Mode is back on. The idle screen shows instead.\n\n"
                       "Takes about 10 to 30 minutes, including three restarts. You'll need the "
                       "administrator password.",
                       UPDATE_STEPS, 0, warn=self.test_note(),
@@ -393,7 +415,7 @@ class UpdateWindow(AdminWindow):
                                ("I understand, switch modes and restart", self.do_ro_off, "primary",
                                 "Waiting for the password…")])
         else:
-            self.page("This display is already in Read/Write mode",
+            self.page("This display is already in Read/write Mode",
                       "It's in Setup Mode without read-only protection, so updates can be installed "
                       "right away. The video pauses until you finish. You'll need the administrator "
                       "password.", UPDATE_STEPS, 1, warn=self.test_note(),
@@ -406,7 +428,7 @@ class UpdateWindow(AdminWindow):
                 return self.unbusy(problem(rc, out))
             loop_state.stop_test("Stopped for a software update")
             loop_state.set_maint("ro_off_pending", origin="ro")
-            self.restart_page("Read-only mode turns off at the restart",
+            self.restart_page("Read-only Mode turns off at the restart",
                               "After the restart, this window opens again to continue.", UPDATE_STEPS, 0)
         run_root(["ro-off"], done)
 
@@ -421,10 +443,10 @@ class UpdateWindow(AdminWindow):
 
     def p_ro_off_pending(self, note):
         if note:  # restarted, but read-only is still on
-            return self.page("Read-only mode is still on", note, UPDATE_STEPS, 0,
+            return self.page("Read-only Mode is still on", note, UPDATE_STEPS, 0,
                              buttons=[("Cancel update", self.do_cancel, "ghost", "Cancelling…"),
                                       ("Try again", self.do_ro_off, "primary", "Waiting for the password…")])
-        self.page("Restart to continue", "Read-only mode turns off after a restart.", UPDATE_STEPS, 0,
+        self.page("Restart to continue", "Read-only Mode turns off after a restart.", UPDATE_STEPS, 0,
                   buttons=[("Cancel update", self.do_cancel, "ghost", "Cancelling…"),
                            ("Restart now", self.do_restart, "primary", "Restarting…")])
 
@@ -433,19 +455,19 @@ class UpdateWindow(AdminWindow):
             if rc:
                 return self.unbusy(problem(rc, out))
             loop_state.end_maint()
-            self.page("Update cancelled", "Read-only mode stays on and the video keeps playing.",
+            self.page("Update cancelled", "Read-only Mode stays on and the video keeps playing.",
                       buttons=[("Close", self.destroy, "primary", "")])
         run_root(["ro-on"], done)
 
     # --- steps 4-7: proceed, check, choose, install
     def p_ready(self, note=None):
         if self.origin == "rw":
-            text = "The video is paused until you finish. Check for updates to continue."
-            alt = ("Finish – resume video", self.do_finish_rw, "ghost", "Finishing…")
+            text = "The video is paused until you finish. Check for updates to continue, or Cancel to resume it."
+            alt = ("Cancel", self.do_finish_rw, "ghost", "Finishing…")
         else:
-            text = ("This display is no longer in read-only mode, so updates can be installed. The video "
-                    "stays off until updates are finished and read-only mode is back on.")
-            alt = ("Skip updates – Enable Read-Only Mode", self.do_ro_on, "ghost", "Waiting for the password…")
+            text = ("This display is no longer in Read-only Mode, so updates can be installed. The video "
+                    "stays off until updates are finished and Read-only Mode is back on.")
+            alt = ("Skip updates & set Read-only Mode", self.do_ro_on, "ghost", "Waiting for the password…")
         self.page("Ready to update", text, UPDATE_STEPS, 1, warn=note,
                   buttons=[alt, ("Check for updates", self.do_check, "primary", "Checking for updates…")],
                   links=[("Change settings (Settings window)", lambda btn: self.get_transient_for().open_admin("settings"))]
@@ -462,8 +484,8 @@ class UpdateWindow(AdminWindow):
             loop_state.set_maint(d.get("stage", "post_update"), origin=self.origin, resume_without_ro=True)
             self.page("Video resumed without read-only protection",
                       "The video comes back in a few seconds. Staff Display Tools shows a warning until "
-                      "read-only mode is back on. To finish, open Update Software and click Enable "
-                      "Read-Only Mode.", danger=STORAGE_WARNING,
+                      "Read-only Mode is back on. To finish, open Update Software and click Set "
+                      "Read-only Mode.", danger=STORAGE_WARNING,
                       buttons=[("Close", self.destroy, "primary", "")])
         self.twice(btn, "Click again to resume video without read-only protection", STORAGE_WARNING, go)
 
@@ -506,25 +528,25 @@ class UpdateWindow(AdminWindow):
                 hint.set_margin_start(28)
                 box.pack_start(hint, False, False, 0)
         self.page(f"{total} update{'s' if total != 1 else ''} available",
-                  "Update All is recommended. To install only some, tick them and click Update selected.",
+                  "Update all is recommended. To install only some, tick them and click Update selected.",
                   UPDATE_STEPS, 1, extra=box,
                   buttons=[("Update selected", self.do_install_selected, "ghost", "Starting…"),
-                           (f"Update All ({total})", lambda: self.install(["all"]), "primary", "Starting…")],
+                           (f"Update all ({total})", lambda: self.install(["all"]), "primary", "Starting…")],
                   links=self.escape_links())
 
     def do_install_selected(self):
         chosen = [k for k, cb in self.checks.items() if cb.get_active()]
         if not chosen:
-            return self.unbusy("Tick at least one group first, or click Update All.")
+            return self.unbusy("Tick at least one group first, or click Update all.")
         self.install(chosen)
 
     def p_uptodate(self):
         if self.origin == "rw":
             buttons = [("Check again", self.do_check, "ghost", "Checking…"),
-                       ("Finish – resume video", self.do_finish_rw, "primary", "Finishing…")]
+                       ("Done", self.do_finish_rw, "primary", "Finishing…")]
         else:
             buttons = [("Check again", self.do_check, "ghost", "Checking…"),
-                       ("Enable Read-Only Mode", self.do_ro_on, "primary", "Waiting for the password…")]
+                       ("Set Read-only Mode", self.do_ro_on, "primary", "Waiting for the password…")]
         self.page("Everything is up to date", "No updates are waiting.", UPDATE_STEPS, 2,
                   warn=None if self.origin == "rw" else STORAGE_WARNING, buttons=buttons,
                   links=self.escape_links())
@@ -593,16 +615,16 @@ class UpdateWindow(AdminWindow):
     # --- steps 9-10: after the update restart
     def p_post(self, note=None):
         if self.origin == "rw":
-            return self.page("Updates are finished", "Click Finish to resume the video.", UPDATE_STEPS, 3,
+            return self.page("Updates are finished", "Click Done to resume the video.", UPDATE_STEPS, 3,
                              warn=note,
-                             buttons=[("Check For Updates", self.do_check, "ghost", "Checking for updates…"),
-                                      ("Finish – resume video", self.do_finish_rw, "primary", "Finishing…")])
+                             buttons=[("Check for updates", self.do_check, "ghost", "Checking for updates…"),
+                                      ("Done", self.do_finish_rw, "primary", "Finishing…")])
         self.page("Updates are finished",
-                  "The display is still in Read/Write mode, so the video stays off. Enable Read-Only Mode "
+                  "The display is still in Read/write Mode, so the video stays off. Set Read-only Mode "
                   "to protect the display and bring the video back, or check for more updates.",
                   UPDATE_STEPS, 2, warn=note, danger=STORAGE_WARNING,
-                  buttons=[("Check For Updates", self.do_check, "ghost", "Checking for updates…"),
-                           ("Enable Read-Only Mode", self.do_ro_on, "primary", "Waiting for the password…")],
+                  buttons=[("Check for updates", self.do_check, "ghost", "Checking for updates…"),
+                           ("Set Read-only Mode", self.do_ro_on, "primary", "Waiting for the password…")],
                   links=self.escape_links())
 
     def do_ro_on(self):
@@ -610,7 +632,7 @@ class UpdateWindow(AdminWindow):
             if rc:
                 return self.unbusy(problem(rc, out))
             loop_state.set_maint("ro_on_pending", origin=self.origin)
-            self.restart_page("Read-only mode is set", "After the restart the display is protected again "
+            self.restart_page("Read-only Mode is set", "After the restart the display is protected again "
                               "and the video resumes by itself.", UPDATE_STEPS, 3)
         run_root(["ro-on"], done)
 
@@ -716,7 +738,7 @@ class SetupWindow(AdminWindow):
         self.w_uptime.set_active(s["require_uptime"])
         add("Uptime", self.w_uptime)
         self.w_ro = Gtk.RadioButton.new_with_label_from_widget(None, "Read-only Mode (recommended)")
-        self.w_rw = Gtk.RadioButton.new_with_label_from_widget(self.w_ro, "Read/Write Mode (not recommended)")
+        self.w_rw = Gtk.RadioButton.new_with_label_from_widget(self.w_ro, "Read/write Mode (not recommended)")
         (self.w_ro if s["read_only"] else self.w_rw).set_active(True)
         mode_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         mode_box.pack_start(self.w_ro, False, False, 0)
@@ -736,10 +758,10 @@ class SetupWindow(AdminWindow):
                 "require_uptime": self.w_uptime.get_active(), "read_only": self.w_ro.get_active()}
 
     def no_drive_page(self):
-        """Burn-in history, the test itself and read-only mode all need the USB data drive."""
+        """Burn-in history, the test itself and Read-only Mode all need the USB data drive."""
         self.page("Set up the USB data drive first",
-                  "The burn-in test, Performance History and the videos are kept on the USB data drive, so they "
-                  "survive read-only mode and every restart. Without it they would be lost at the next restart. "
+                  "The burn-in test, Performance history and the videos are kept on the USB data drive, so they "
+                  "survive Read-only Mode and every restart. Without it they would be lost at the next restart. "
                   "Plug in a USB drive, then choose it in Settings > This display.",
                   buttons=[("Close", self.destroy, "ghost", ""),
                            ("Open Settings", self.to_settings, "primary", "Opening…")])
@@ -787,8 +809,8 @@ class SetupWindow(AdminWindow):
                        ("Start burn-in test" if not finished else "Start another test", self.do_start, "primary",
                         "Waiting for the password…")]
             links = []
-        buttons.insert(0, ("Finish Setup (Go Live)…", self.p_golive, "ghost", ""))
-        mode = "Read-only" if loop_state.ro_now() else "Read/Write"
+        buttons.insert(0, ("Finish setup (go live)…", self.p_golive, "ghost", ""))
+        mode = "Read-only" if loop_state.ro_now() else "Read/write"
         self.page("Burn-in test", f"Setup Mode: the display is being tested before it goes into service. "
                   f"Right now it is in {mode} Mode." + (" Settings are locked while a test runs." if running else ""),
                   extra=box, buttons=buttons, links=links)
@@ -834,7 +856,7 @@ class SetupWindow(AdminWindow):
                     return self.unbusy(problem(rc2, out2))
                 loop_state.mark_test_pending(s)
                 self.restart_page("The test starts after a restart",
-                                  f"The display restarts in {'Read-only' if s['read_only'] else 'Read/Write'} "
+                                  f"The display restarts in {'Read-only' if s['read_only'] else 'Read/write'} "
                                   f"Mode and the {s['hours']}-hour test starts by itself.",
                                   warn=None if s["read_only"] else RW_TEST_WARNING)
             run_root([action], switched)
@@ -850,7 +872,7 @@ class SetupWindow(AdminWindow):
             self.say("The burn-in test was stopped.")
         self.twice(btn, "Click again to stop the test", "Stopping ends this test. A new test starts from zero.", go)
 
-    # --- Finish Setup (Go Live)
+    # --- Finish setup (go live)
     def p_golive(self):
         passed = burnin_eval.last_pass()
         t = loop_state.burnin()["test"]
@@ -875,11 +897,11 @@ class SetupWindow(AdminWindow):
         if t.get("state") in ("running", "pending_restart"):
             box.pack_start(_label("The burn-in test that is running will be stopped.", "warn"), False, False, 0)
         self.page("Finish Setup and go live",
-                  "Go Live turns on read-only mode, switches the display to Production Mode, keeps "
-                  "24 hours of Performance History, and restarts. The video resumes after the restart.",
+                  "Going live turns on Read-only Mode, switches the display to Production Mode, keeps "
+                  "24 hours of Performance history, and restarts. The video resumes after the restart.",
                   extra=box,
                   buttons=[("Back", self.show_current, "ghost", ""),
-                           ("Go Live and restart", self.do_golive, "primary", "Waiting for the password…")])
+                           ("Go live and restart", self.do_golive, "primary", "Waiting for the password…")])
         if self.w_ssh is not None:
             ssh_warn.set_visible(not self.w_ssh.get_active())
         self.golive_confirmed = passed
@@ -887,7 +909,7 @@ class SetupWindow(AdminWindow):
     def do_golive(self):
         if not self.golive_confirmed:
             self.golive_confirmed = True
-            return self.unbusy("No passing burn-in test. Click Go Live and restart again to go live anyway.")
+            return self.unbusy("No passing burn-in test. Click Go live and restart again to go live anyway.")
         if loop_state.maint_stage():
             return self.unbusy("Finish the software update first (Update Software).")
         steps = []
@@ -902,7 +924,7 @@ class SetupWindow(AdminWindow):
                 return self.unbusy(problem(rc, out))
             if steps:
                 return run_root(steps.pop(0), next_step)
-            loop_state.stop_test("Stopped at Go Live")
+            loop_state.stop_test("Stopped when the display went live")
             loop_state.set_mode("production")
             self.restart_page("This display is going live",
                               "After the restart it runs in Production Mode with read-only protection.")

@@ -15,6 +15,7 @@ d() { mkdir -p "$T/$1"; }
 d usr/lib/loop
 cp "$ROOT"/src/*.py "$T/usr/lib/loop/"
 cp -R "$ROOT/src/help" "$T/usr/lib/loop/help"
+cp -R "$ROOT/src/icons" "$T/usr/lib/loop/icons"  # Lucide icons (ISC, licence in icons/LICENSE)
 for s in setup_branding.sh setup_chromium_policy.sh setup_usb.sh setup_bootsplash.sh reset_chromium_keyring.sh; do
   install -m 755 "$ROOT/src/$s" "$T/usr/lib/loop/$s"
 done
@@ -48,7 +49,7 @@ for p in default "$@"; do
 done
 d usr/share/doc/loop-display
 install -m 644 "$ROOT/README.md" "$ROOT/TRADEMARKS.md" "$T/usr/share/doc/loop-display/"
-printf 'LOOP (Local Outreach on Pi)\nCopyright (C) 2026 Matt Geiger, Temple Consulting, LLC.\nLicense: AGPL-3.0-or-later (/usr/share/common-licenses/AGPL-3 or https://www.gnu.org/licenses/agpl-3.0.html).\nOrganization profiles and their branding are excluded; see TRADEMARKS.md.\n' \
+printf 'LOOP (Local Outreach on Pi)\nCopyright (C) 2026 Matt Geiger, Temple Consulting, LLC.\nLicense: AGPL-3.0-or-later (/usr/share/common-licenses/AGPL-3 or https://www.gnu.org/licenses/agpl-3.0.html).\nOrganization profiles and their branding are excluded; see TRADEMARKS.md.\n\nIcons: Lucide (https://lucide.dev), ISC License; see /usr/lib/loop/icons/LICENSE.\n' \
   > "$T/usr/share/doc/loop-display/copyright"
 find "$T" -name __pycache__ -prune -exec rm -rf {} +
 

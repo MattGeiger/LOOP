@@ -13,14 +13,14 @@ What each Staff Display Tools button does and when to use it.
 
 ## Checking the Display
 
-- **Display status** shows what is playing and up next, free storage, temperature and whether read-only mode is on. Open it before you contact {{identity.contact}}.
-- **Performance History** shows the last 24 hours of dropped frames, temperature and memory. Open it when you are asked to, or when the video has been stuttering.
+- **Display status** shows what is playing and up next, free storage, temperature and whether Read-only Mode is on. Open it before you contact {{identity.contact}}.
+- **Performance history** shows the last 24 hours of dropped frames, temperature and memory. Open it when you are asked to, or when the video has been stuttering.
 
 ![The Display status report](images/display-status.png)
 
 ## Updates and Setup
 
-**Update Software**, **Setup & burn-in** and **Settings** ask for the administrator password and change nothing without it. See [Updates and Setup](05-updates-and-setup.md).
+**Update Software**, **Setup & Burn-in** and **Settings** ask for the administrator password and change nothing without it. See [Updates and Setup](05-updates-and-setup.md).
 
 ## Warnings
 

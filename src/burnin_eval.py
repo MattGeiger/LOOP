@@ -3,7 +3,7 @@
 # Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
 """Burn-in pass/fail judge for a LOOP display Pi.
 
-Reads the Performance History CSVs (burnin_logger.py) for the window of the current burn-in
+Reads the Performance history CSVs (burnin_logger.py) for the window of the current burn-in
 test (loop_state.burnin()["test"]) and checks it against that test's own settings:
 
   temperature  CPU and GPU strictly below max_temp_c in every sample

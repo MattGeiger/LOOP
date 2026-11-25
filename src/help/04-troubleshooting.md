@@ -13,7 +13,7 @@ What to do about the most common display problems before you contact {{identity.
 ## Yellow Warnings
 
 - **“The USB video drive is not connected”:** the display plays its backup video. Do not unplug anything; contact {{identity.contact}}.
-- **“Read-only mode is OFF”:** the display is not protected if the power goes out. Contact {{identity.contact}}.
+- **“Read-only Mode is OFF”:** the display is not protected if the power goes out. Contact {{identity.contact}}.
 - **“Software update in progress”:** the display is being updated. The video comes back when the update is finished.
 
 ![A yellow warning under NOW SHOWING](images/warning.png)
@@ -21,5 +21,5 @@ What to do about the most common display problems before you contact {{identity.
 ## Good to Know
 
 - The displays stay powered all the time. Turn the **TVs** off at closing and on at opening, but **never unplug a display**.
-- **Read-only mode** protects each display from power cuts. Changes outside the videos are undone at every restart. Videos and history are kept.
+- **Read-only Mode** protects each display from power cuts. Changes outside the videos are undone at every restart. Videos and history are kept.
 - Questions or problems: contact **{{identity.contact}}**.

@@ -13,7 +13,7 @@ From {{content.library_name}} to the screen, without cutting off the current ad.
 2. Sign in with your work account, open the video, and click **Download**. It saves straight to the display.
 3. **Close the browser window** when the download finishes. Closing it signs you out.
 4. Check **Up next** in Staff Display Tools. The new video starts when the current one finishes its loop, so nothing is cut off mid-ad.
-5. Click **Done – back to fullscreen**.
+5. Click **Start fullscreen playback**.
 
 ![The browser opens in a private (Incognito) window, with the video library bookmark](images/library-folder.png)
 

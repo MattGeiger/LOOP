@@ -63,6 +63,14 @@ def check_theme(name, t):
         r = ratio(t["on_accent"], t[bg])
         if r < 4.5:
             fails.append(f"on_accent {t['on_accent']} is {r:.2f}:1 on {bg} (needs 4.5)")
+    # Icons (1.4.11, 3:1): each takes the text color beside it (docs/DESIGN_LANGUAGE.md).
+    for ic in ("text", "text_muted", "text_body", "link", "ok", "danger", "accent"):
+        worst, where = min((ratio(t[ic], b), n) for n, b in backgrounds.items())
+        if worst < 3.0:
+            fails.append(f"icon color {ic} {t[ic]} is {worst:.2f}:1 on {where} (needs 3 for graphics)")
+    for bg in ("accent", "accent_deep"):  # dark icons on the yellow buttons, active steps and busy cards
+        if ratio(t["on_accent"], t[bg]) < 3.0:
+            fails.append(f"icon color on_accent {t['on_accent']} on {bg} is below 3:1")
     window = {k: t[k] for k in ("bg_start", "bg_mid", "bg_end")}
     for ui in ("border", "border_hover", "accent"):
         worst, where = min((ratio(t[ui], b), n) for n, b in window.items())
@@ -74,14 +82,14 @@ def check_theme(name, t):
 def check_styles():
     fails = []
     css = ""
-    for f in ("staff_tools.py", "staff_admin.py", "staff_help.py", "settings_ui.py"):
+    for f in ("staff_tools.py", "staff_admin.py", "staff_help.py", "settings_ui.py", "ui_icons.py"):
         s = open(os.path.join(ROOT, "src", f)).read()
         css += "".join(re.findall(r'_?CSS = b"""(.*?)"""', s, re.S))
     for size in re.findall(r"font-size: (\d+(?:\.\d+)?)pt", css):
         if float(size) < 11:
             fails.append(f"font-size {size}pt is below 11 pt")
     rules = re.findall(r"([^{}]+)\{([^}]*)\}", css)
-    for cls in ("about-link", "about-x", "link-btn", "help-toc", "help-back", "help-link", "tab", "choose", "color", "version-link"):
+    for cls in ("about-link", "about-x", "link-btn", "help-toc", "help-back", "help-link", "tab", "choose", "color", "version-link", "step"):
         sized = any(re.search(r"button\.%s\b" % cls, sel) and "min-height: 24px" in body for sel, body in rules)
         if not sized:
             fails.append(f"button.{cls} has no 24 px minimum target")

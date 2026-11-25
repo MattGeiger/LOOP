@@ -177,7 +177,7 @@ upd.p_post()
 shot(upd, "update-post")
 upd.destroy()
 
-loop_state.usb_ok = lambda: False  # no USB data drive: Setup & burn-in sends you to Settings
+loop_state.usb_ok = lambda: False  # no USB data drive: Setup & Burn-in sends you to Settings
 main.open_admin("setup")
 shot(main.admin["setup"], "setup-no-drive")
 main.admin["setup"].destroy()
@@ -200,7 +200,7 @@ setup.p_golive()
 shot(setup, "go-live")
 setup.destroy()
 
-# Settings: in Read-only mode it points to Update Software; otherwise every page.
+# Settings: in Read-only Mode it points to Update Software; otherwise every page.
 import settings_ui  # noqa: E402
 if PROFILE == "default":  # LOOP's own screenshots (and Help) never show an organization's profile
     settings_ui.S.packaged_profiles = lambda: ["default"]
@@ -271,6 +271,31 @@ for step in range(1, 7):
     if isinstance(wiz.fit_body.get_parent(), Gtk.Viewport):
         print(f"wizard step {step} ({settings_ui.WIZARD_STEPS[step]}) SCROLLS")
 wiz.destroy()
+
+# Clickable LOOP Setup steps: only steps already reached open; later ones are muted and ignore clicks.
+nav = settings_ui.SetupWizard()
+nav.disconnect_by_func(Gtk.main_quit)
+nav.values["content.library_url"] = "https://example.org/videos"
+results = []
+nav.goto_step(3)
+results.append(("a fresh wizard ignores a jump ahead", nav.step == 0))
+nav.step = 1
+nav.show_step()
+nav.steps.get_children()[4].clicked()  # Pictures: not reached yet
+results.append(("a muted step ignores a click", nav.step == 1))
+results.append(("steps not reached look muted",
+                all(p.get_style_context().has_class("step-muted") for p in nav.steps.get_children()[2:])))
+nav.reached = 4  # as if Organization to This display were completed with Next
+nav.show_step()
+nav.steps.get_children()[2].clicked()  # Video library: reached
+results.append(("a reached step opens", nav.step == 2))
+nav.steps.get_children()[0].clicked()  # Start: always open going back
+results.append(("going back to Start works", nav.step == 0))
+nav.goto_step(5)
+results.append(("a step past the furthest reached stays shut", nav.step == 0))
+nav.destroy()
+for what, ok in results:
+    print(("ok   " if ok else "FAIL ") + "wizard steps: " + what)
 want = ui_screen.px(1100)
 wide = {k: v for k, v in widths.items() if v > want}
 print(f"wizard widths with long values: {sorted(set(widths.values()))} (design {want})"

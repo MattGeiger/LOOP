@@ -17,6 +17,7 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | **Cycle** | Software updates | `refresh-cw`, `refresh-cw-off` |
 | **Milestones** | One-time steps in setting up a display | `circle-fading-play`, `flame`, `clapperboard`, `circle-dashed-check` |
 | **Settings** | Changing configuration | `settings` |
+| **Recovery** | Putting something right after a failure | `wrench` (repair), `rotate-ccw` (try again) |
 
 ## Icons by action
 
@@ -28,7 +29,8 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | Get a new video | `file-video-camera` |
 | Open videos folder | `folder-open` |
 | Show idle screen | `wallpaper` |
-| Restart video | `monitor-play` |
+| Restart video (and its "Click again to restart") | `monitor-play` |
+| Resume video (the idle screen card, while the idle screen shows) | `monitor-play` |
 | Display status | `monitor-activity` |
 | Performance history | `list-clock` |
 | Update Software | `refresh-cw` |
@@ -43,10 +45,12 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | Control | Icon |
 | --- | --- |
 | Finish setup (go live) | `clapperboard` |
+| Go live and restart | `clapperboard` |
 | Change settings | `settings` |
 | Start burn-in test | `flame` |
 | Start another test | `flame` |
 | Stop and change settings | `circle-stop` |
+| Stop the burn-in test (link) | `circle-stop` |
 | Open Settings | `settings` |
 
 ### LOOP Setup and Settings (steps and tabs)
@@ -63,9 +67,12 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 
 | Control | Icon |
 | --- | --- |
+| Start (the wizard's first button) | `circle-fading-play` |
+| Open LOOP Setup (step by step) | `circle-fading-play` |
 | Look again (USB drive) | `usb` |
+| Choose a picture… | `image-plus` |
 | Use readable #… | `contrast` |
-| Save settings | `save` |
+| Save settings, Save and set up | `save` |
 
 ### Update Software
 
@@ -78,12 +85,18 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 
 | Control | Icon |
 | --- | --- |
-| Check for updates | `refresh-cw` |
+| Check for updates, Check again | `refresh-cw` |
+| Open Update Software | `refresh-cw` |
+| I understand, switch modes and restart | `file-cog` |
 | Skip updates & set Read-only Mode | `refresh-cw-off` |
 | Update selected | `list-checks` |
 | Update all (N) | `download` |
 | Restart now | `power` |
-| Cancel | `x` |
+| Repair, Repair and try again | `wrench` |
+| Try again | `rotate-ccw` |
+| Change settings (Settings window) (link) | `settings` |
+| Resume video without read-only (not recommended) (link) | `monitor-play` |
+| Cancel, Cancel update | `x` |
 | Done | `check` |
 
 ### Everywhere
@@ -92,7 +105,8 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | --- | --- |
 | Close, Cancel | `x` |
 | Done (finishes a task) | `check` |
-| Back / Next | `arrow-left` / `arrow-right` |
+| Back / Next / Continue, and Help's Previous / Next | `arrow-left` / `arrow-right` |
+| Help's Close and All guides | `x` / `arrow-left` |
 | Source Code on GitHub | `github` |
 | A button at work | `loader-circle` (spinning) |
 
@@ -104,6 +118,8 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 - `refresh-cw` means software updates only. The USB **Look again** uses `usb`.
 - `monitor-cog` means setting up this display. `settings` means changing values.
 - `file-cog` and `file-lock` are the read/write and read-only pair.
+- `circle-fading-play` means beginning setup: the wizard's Start step, its Start button, and Open LOOP Setup.
+- `wrench` and `rotate-ccw` were added in 1.1.0 for the recovery buttons Update Software already had.
 
 ## Rules for icons
 
@@ -162,7 +178,10 @@ Setup & Burn-in and Update Software all read it, so the same action can't drift 
 | Finish Setup (Go Live) | Finish setup (go live) |
 | Performance History | Performance history |
 | Update steps: 1 Read/Write, 2 Updates, 3 Read-only, 4 Video back | Read/write Mode, Check for updates, Set Read-only Mode, Return to video |
-| Finish – resume video (on the Updates step, when the display was already in read/write mode) | Cancel |
+| Finish – resume video (on the Updates step, when the display was already in Read/write Mode) | Cancel |
+| Finish – resume video (Everything is up to date, and the last step) | Done |
+| Enable Read-Only Mode | Set Read-only Mode |
+| Go Live and restart | Go live and restart |
 | Skip updates – Enable Read-Only Mode | Skip updates & set Read-only Mode |
 | Check For Updates, Finish – resume video (last step) | Check for updates, Done |
 | Update All (N) | Update all (N) |

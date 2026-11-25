@@ -22,9 +22,9 @@ A display whose TV is mounted sideways (portrait) shows its picture turned on yo
 1. **Double-click the video** to leave full screen. The taskbar appears at the top.
 2. Click the **Staff Tools icon** at the top left of the taskbar, or double-click **{{identity.launcher_name}}** on the desktop.
 3. Click a button **once**. It turns **yellow** and says what it is doing. Extra clicks are ignored, so wait for the message under the buttons.
-4. When you finish, click **Done – back to fullscreen**.
+4. When you finish, click **Start fullscreen playback**.
 
-While Staff Display Tools is open the video pauses, so it never covers the window or Help. It carries on when you click **Done** or the window closes. (During a burn-in test it keeps playing, in a window.)
+While Staff Display Tools is open the video pauses, so it never covers the window or Help. It carries on when you click **Start fullscreen playback** or the window closes. (During a burn-in test it keeps playing, in a window.)
 
 ![Staff Display Tools with its six buttons](images/main-window.png)
 

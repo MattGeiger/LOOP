@@ -37,6 +37,7 @@ from gi.repository import GLib, Gtk, Gdk, Pango  # noqa: E402
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import staff_admin  # noqa: E402
 import staff_help  # noqa: E402
+import ui_icons  # noqa: E402
 import ui_screen  # noqa: E402
 import loop_profile  # noqa: E402
 import loop_state  # noqa: E402
@@ -120,15 +121,6 @@ button.pill.ghost {
 button.pill.ghost label { color: @text@; }
 button.pill:disabled { opacity: 0.45; }
 
-label.step {
-  padding: 6px 14px;
-  border-radius: 999px;
-  border: 1px solid alpha(@border@, 0.85);
-  color: @text_muted@;
-  font-size: 11pt;
-}
-label.step-active { background-color: @accent@; border-color: @accent_deep@; color: @on_accent@; }
-label.step-done { color: @ok@; border-color: alpha(@ok@, 0.6); }
 box.panel {
   background-image: linear-gradient(to top, @card_bottom@, @surface@);
   border: 1px solid alpha(@border@, 0.85);
@@ -176,7 +168,7 @@ label.version-link { font-size: 11pt; color: @text_muted@; }
 button.version-link:hover label.version-link { color: @link@; text-decoration-line: underline; }
 window.staff scrolledwindow:not(.report-scroll), window.staff viewport, window.report scrolledwindow:not(.report-scroll) { background-color: transparent; border: none; }
 window.staff viewport { background-color: transparent; }
-"""
+""" + ui_icons.ICON_CSS
 
 
 def read_status():
@@ -263,7 +255,7 @@ def version_link(window, on_click):
     b.get_style_context().add_class("version-link")
     b.set_relief(Gtk.ReliefStyle.NONE)
     b.set_halign(Gtk.Align.END)
-    b.add(label(f"Version {APP_VERSION}", "version-link", xalign=1.0))
+    b.add(ui_icons.IconLabel(f"Version {APP_VERSION}", "version-link", icon=ui_icons.ICONS["Version"]))
     b.set_tooltip_text("Release notes: what's new in this version")
     b.connect("clicked", lambda *_: on_click())
     return b
@@ -278,10 +270,14 @@ class Card(Gtk.Button):
         self.set_relief(Gtk.ReliefStyle.NONE)
         self.title_text, self.sub_text = title, sub
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=4)
-        self.title = label(title, "title", weight="bold")
+        self.head = ui_icons.IconLabel(title, size="card", markup=bold(title))
+        self.head.set_halign(Gtk.Align.START)
+        self.title = self.head.label
+        self.title.get_style_context().add_class("title")
+        self.title.set_xalign(0.0)
         self.sub = label(sub, "sub", wrap=True)
         self.sub.set_max_width_chars(30)  # wraps inside the card instead of widening the window
-        box.pack_start(self.title, False, False, 0)
+        box.pack_start(self.head, False, False, 0)
         box.pack_start(self.sub, False, False, 0)
         self.add(box)
         self.busy = False
@@ -291,6 +287,13 @@ class Card(Gtk.Button):
         self.title.set_markup(bold(title))
         if sub is not None:
             self.sub.set_text(sub)
+
+    def set_icon_for(self, title):
+        """Show the icon of another action (Show idle screen <-> Resume video)."""
+        name = ui_icons.icon_for(title)
+        if name and self.head.icon is not None and self.head.icon.name != name:
+            self.head.icon.name, self.head.icon._rgb = name, None
+            self.head.icon.redraw()
 
 
 class StaffTools(Gtk.Window):
@@ -348,7 +351,7 @@ class StaffTools(Gtk.Window):
         self.banner_text.set_ellipsize(Pango.EllipsizeMode.END)
         btext.pack_start(self.banner_text, False, False, 0)
         self.banner.pack_start(btext, True, True, 0)
-        setup_btn = self.pill("Setup & burn-in", lambda *_: self.open_admin("setup"), ghost=True)
+        setup_btn = self.pill("Setup & Burn-in", lambda *_: self.open_admin("setup"), ghost=True)
         setup_btn.set_valign(Gtk.Align.CENTER)
         self.banner.pack_end(setup_btn, False, False, 0)
         middle.pack_start(self.banner, False, False, 0)
@@ -374,7 +377,7 @@ class StaffTools(Gtk.Window):
             ("Show idle screen", "Pause the video and show the idle screen.", self.toggle_idle),
             ("Restart video", "Use if the screen looks stuck.", self.restart),
             ("Display status", "What's playing, storage, temperature.", self.show_status),
-            ("Performance History", "Last 24 hours: dropped frames, temperature, memory.", self.show_report),
+            ("Performance history", "Last 24 hours: dropped frames, temperature, memory.", self.show_report),
         ]
         self.idle_card = None
         for i, (t, s, fn) in enumerate(cards):
@@ -400,16 +403,14 @@ class StaffTools(Gtk.Window):
             link = Gtk.Button()
             link.get_style_context().add_class("about-link")
             link.set_relief(Gtk.ReliefStyle.NONE)
-            link.add(label(text, "about-link", weight="semibold"))
+            link.add(ui_icons.IconLabel(text, "about-link", markup=bold(text, "semibold")))
             link.connect("clicked", lambda *_, fn=fn: fn())
             links.pack_start(link, False, False, 0)
         hints.pack_start(links, False, False, 0)
         foot.pack_start(hints, False, False, 0)
         self.done_btn = Gtk.Button()
         self.done_btn.get_style_context().add_class("pill")
-        done_lbl = Gtk.Label()
-        done_lbl.set_markup(bold("Done – back to fullscreen"))
-        self.done_btn.add(done_lbl)
+        self.done_btn.add(ui_icons.IconLabel("Start fullscreen playback", markup=bold("Start fullscreen playback")))
         self.done_btn.connect("clicked", lambda *_: self.done())
         foot.pack_end(self.done_btn, False, False, 0)
         self.admin = {}  # kind -> open admin window
@@ -432,9 +433,7 @@ class StaffTools(Gtk.Window):
         b.get_style_context().add_class("pill")
         if ghost:
             b.get_style_context().add_class("ghost")
-        lb = Gtk.Label()
-        lb.set_markup(bold(text))
-        b.add(lb)
+        b.add(ui_icons.IconLabel(text, markup=bold(text)))
         b.connect("clicked", on_click)
         return b
 
@@ -456,6 +455,7 @@ class StaffTools(Gtk.Window):
     def set_busy(self, card, title, message):
         card.busy = True
         card.get_style_context().add_class("busy")
+        card.head.set_busy(True)
         card.set_text(title)
         self.say(message, keep=True)
         win = card.get_window()
@@ -466,6 +466,7 @@ class StaffTools(Gtk.Window):
     def clear_busy(self, card, message=""):
         card.busy = False
         card.get_style_context().remove_class("busy")
+        card.head.set_busy(False)
         card.set_text(card.title_text)
         win = card.get_window()
         if win:
@@ -562,7 +563,8 @@ class StaffTools(Gtk.Window):
         if any(w.busy for w in self.admin.values()):
             self.say("An update or setup step is still running. Wait for it to finish first.")
             return
-        self.done_btn.get_child().set_markup(bold("Returning to fullscreen…"))
+        self.done_btn.get_child().set_markup(bold("Starting fullscreen playback…"))
+        self.done_btn.get_child().set_busy(True)
         self.done_btn.set_sensitive(False)
         self.pump()
         vlc_fullscreen()
@@ -574,9 +576,11 @@ class StaffTools(Gtk.Window):
             if os.path.exists(IDLE_FLAG):
                 c.title_text = "Resume video"
                 c.set_text("Resume video", "Stop the idle screen and bring the video back.")
+                c.set_icon_for("Resume video")
             else:
                 c.title_text = "Show idle screen"
                 c.set_text("Show idle screen", "Pause the video and show the idle screen.")
+                c.set_icon_for("Show idle screen")
 
     def set_now(self, text):
         self.now.set_markup(bold(text, "semibold"))
@@ -601,8 +605,8 @@ class StaffTools(Gtk.Window):
         if not st.get("usb_mounted", True):
             warnings.append("Warning: the USB video drive is not connected.")
         if st.get("usb_mounted", True) and not loop_state.data_kept():
-            warnings.append("Warning: read-only mode is also covering the USB drive, so new videos and history are "
-                            "lost at restart. Turn read-only mode off and on again with Update Software.")
+            warnings.append("Warning: Read-only Mode is also covering the USB drive, so new videos and history are "
+                            "lost at restart. Turn Read-only Mode off and on again with Update Software.")
         warnings += self.maint_warnings()
         self.warn.set_text("\n".join(warnings))
         self.refresh_banner()
@@ -620,8 +624,8 @@ class StaffTools(Gtk.Window):
         if not stage:
             return []
         if d.get("resume_without_ro"):
-            return ["Read-only mode is OFF and the video is running unprotected. "
-                    "Click Update Software and Enable Read-Only Mode."]
+            return ["Read-only Mode is OFF and the video is running unprotected. "
+                    "Click Update Software and Set Read-only Mode."]
         if stage in ("ro_off_pending", "installed", "ro_on_pending"):
             return ["A software update is waiting for a restart. Click Update Software to continue."]
         return ["Software update in progress: the video is paused. Click Update Software to continue."]
@@ -646,7 +650,7 @@ class StaffTools(Gtk.Window):
         elif state == "pending_restart":
             text = "Burn-in test starts after the next restart."
         elif state == "finished":
-            text = f"Last burn-in test: {t.get('verdict', '?')}. Open Setup & burn-in to go live."
+            text = f"Last burn-in test: {t.get('verdict', '?')}. Open Setup & Burn-in to go live."
         elif state in ("stopped", "aborted"):
             text = f"Burn-in test {state}: {t.get('reason', '')}"
         else:
@@ -739,7 +743,7 @@ class StaffTools(Gtk.Window):
         self.set_busy(card, "Loading history…", "Loading the last 24 hours (up to 20 seconds)…")
         work = lambda: run(["python3", os.path.join(loop_profile.CODE_DIR, "burnin_summary.py"), "--hours", "24"])
         self.in_background(work, lambda out: (self.clear_busy(card),
-                                              ReportWindow(self, "Performance History (last 24 hours)",
+                                              ReportWindow(self, "Performance history (last 24 hours)",
                                                            out or "No data recorded yet.")))
 
 
@@ -764,11 +768,11 @@ def status_text():
         *([f"  - {v}" for v in st.get("videos_in_folder", [])] or ["  (none)"]),
         "",
         f"USB video drive:    {'connected' if du else 'NOT CONNECTED'}"
-        + ("" if not du or loop_state.data_kept() else ", NOT KEPT (under read-only mode)")
+        + ("" if not du or loop_state.data_kept() else ", NOT KEPT (under Read-only Mode)")
         + (f", {du.free / 1e9:.1f} GB free of {du.total / 1e9:.1f} GB" if du else ""),
         f"Temperature:        {temp}",
         f"Power/heat flags:   {'none' if thr == '0x0' else thr + '  (contact ' + loop_profile.get('identity.contact') + ')'}",
-        f"Read-only mode:     {'ON' if ro == 'overlay' else 'OFF' + ('  (turn back on after maintenance!)' if ro else '')}",
+        f"Read-only Mode:     {'ON' if ro == 'overlay' else 'OFF' + ('  (turn back on after maintenance!)' if ro else '')}",
         f"Display mode:       {loop_state.mode().capitalize()}",
         f"Software update:    {stage.replace('_', ' ') if stage else 'none in progress'}",
         f"SSH:                {'on' if loop_state.ssh_enabled() else 'off'}",
@@ -776,7 +780,7 @@ def status_text():
     return "\n".join(lines)
 
 
-APP_VERSION = "1.0.0"
+APP_VERSION = "1.1.0"
 
 
 def about_info():
@@ -785,7 +789,8 @@ def about_info():
     facts = [("Made by", "Matt Geiger, Temple Consulting, LLC. 2026")]
     if org:
         facts.append(("Made for", org))
-    facts += [("Made with", "Raspberry Pi OS, VLC, Python, GTK, Raspberry Pi Connect, Claude Code, and Codex"),
+    facts += [("Made with", "Raspberry Pi OS, VLC, Python, GTK, Lucide icons, Raspberry Pi Connect, Claude Code, "
+                            "and Codex"),
               ("Version", APP_VERSION), ("License", "AGPL-3.0-or-later")]
     notice = "The application code is open source under AGPL-3.0-or-later."
     if loop_profile.get("identity.branding_notice"):
@@ -794,7 +799,7 @@ def about_info():
         "name": "LOOP",
         "tagline": "Local Outreach on Pi",
         "description": "Outreach videos that play on a loop by themselves, with simple controls for staff, guided "
-                       "software updates, burn-in testing and Performance History.",
+                       "software updates, burn-in testing and Performance history.",
         "facts": facts,
         "notice": notice,
     }
@@ -854,9 +859,7 @@ class AboutWindow(Gtk.Window):
         src_btn = Gtk.Button()
         src_btn.get_style_context().add_class("pill")
         src_btn.get_style_context().add_class("ghost")
-        src_lbl = Gtk.Label()
-        src_lbl.set_markup(bold("Source Code on GitHub"))
-        src_btn.add(src_lbl)
+        src_btn.add(ui_icons.IconLabel("Source Code on GitHub", markup=bold("Source Code on GitHub")))
         src_btn.set_halign(Gtk.Align.CENTER)
         src_btn.set_margin_top(24)
         src_btn.set_tooltip_text(SOURCE_URL)
@@ -896,9 +899,7 @@ class ReportWindow(Gtk.Window):
         box.pack_start(sw, True, True, 0)
         close = Gtk.Button()
         close.get_style_context().add_class("pill")
-        close_lbl = Gtk.Label()
-        close_lbl.set_markup(bold("Close"))
-        close.add(close_lbl)
+        close.add(ui_icons.IconLabel("Close", markup=bold("Close")))
         close.set_halign(Gtk.Align.END)
         close.connect("clicked", lambda *_: self.destroy())
         box.pack_end(close, False, False, 0)

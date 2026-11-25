@@ -34,15 +34,15 @@ Each Pi also needs a USB drive for the videos (setup erases it), a TV and Raspbe
       current loop.
 - [ ] On the real TV, the video is full screen, sharp and smooth. A sideways TV shows pre-rotated videos upright,
       and the idle screen is turned correctly.
-- [ ] Opening Staff Display Tools pauses the video, and **Done** resumes it full screen.
+- [ ] Opening Staff Display Tools pauses the video, and **Start fullscreen playback** resumes it full screen.
 - [ ] Help, Release Notes (click the version), About and Settings open and read well on the TV.
-- [ ] **Display status** shows a real temperature. After an hour of video, Performance History shows steady
+- [ ] **Display status** shows a real temperature. After an hour of video, Performance history shows steady
       temperature and CPU use.
 - [ ] Making the idle video during setup takes under about two minutes.
 - [ ] After a power cut and restart, the video comes back by itself from the USB drive.
 - [ ] With the network unplugged, the video keeps playing.
-- [ ] The burn-in test passes in read-only mode (**Setup & burn-in**).
-- [ ] After **Finish Setup (Go Live)**, read-only mode is on and Performance History keeps 24 hours.
+- [ ] The burn-in test passes in Read-only Mode (**Setup & Burn-in**).
+- [ ] After **Finish setup (go live)**, Read-only Mode is on and Performance history keeps 24 hours.
 - [ ] Staff Display Tools works over **Raspberry Pi Connect** screen sharing.
 - [ ] After a restart, the taskbar and desktop keep the profile's colors.
 - [ ] Removing LOOP (`sudo apt remove loop-display`) restores the desktop. Test this on a spare card.

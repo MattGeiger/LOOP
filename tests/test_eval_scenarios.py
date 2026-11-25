@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
-"""Burn-in evaluator scenarios on synthetic Performance History logs. Run: python3 tests/test_eval_scenarios.py"""
+"""Burn-in evaluator scenarios on synthetic Performance history logs. Run: python3 tests/test_eval_scenarios.py"""
 import csv, sys, os
 from datetime import datetime, timedelta
 import tempfile

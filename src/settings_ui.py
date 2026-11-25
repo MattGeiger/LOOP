@@ -9,7 +9,7 @@ then saves. SettingsWindow (Staff Display Tools > Settings) shows the same pages
 
 Saving writes profile.json, site.json and any new pictures to a private folder, and the privileged helper
 (`loop-maintenance-root settings`, behind the administrator password) checks them and runs loop-setup. Like
-software updates, settings need Read/Write mode; in Read-only mode, Settings sends you to Update Software.
+software updates, settings need Read/write Mode; in Read-only Mode, Settings sends you to Update Software.
 Same look and click rules as the admin windows: instant feedback, repeat clicks ignored.
 """
 import json
@@ -31,6 +31,7 @@ import loop_profile  # noqa: E402
 import loop_settings as S  # noqa: E402
 import loop_state  # noqa: E402
 import staff_admin  # noqa: E402
+import ui_icons  # noqa: E402
 import ui_screen  # noqa: E402
 from staff_admin import _bold, _label  # noqa: E402
 
@@ -192,7 +193,7 @@ class Form(Gtk.Box):
             self.color_entries[key] = entry
             fix = Gtk.Button()  # one-click readable shade, shown only when the color fails
             fix.get_style_context().add_class("choose")
-            fix.add(_label("", "choose", wrap=False, weight="semibold"))
+            fix.add(ui_icons.IconLabel("", "choose", icon=ui_icons.ICONS["Use readable"]))
             fix.set_no_show_all(True)
             fix.connect("clicked", lambda *_a, k=key: self.apply_suggestion(k))
             self.fix_buttons[key] = fix
@@ -202,7 +203,7 @@ class Form(Gtk.Box):
             box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=10)
             btn = Gtk.Button()
             btn.get_style_context().add_class("choose")
-            btn.add(_label("Choose a picture…", "choose", wrap=False, weight="semibold"))
+            btn.add(ui_icons.IconLabel("Choose a picture…", "choose", markup=_bold("Choose a picture…", "semibold")))
             shown = _label(self._file_text(key, opt), "field-file", wrap=False)
             shown.set_ellipsize(Pango.EllipsizeMode.MIDDLE)  # a long file name never widens the window
             shown.set_max_width_chars(48)
@@ -266,7 +267,7 @@ class Form(Gtk.Box):
             btn = self.fix_buttons[key]
             if fix:
                 btn.get_child().set_markup(f'<span weight="semibold">Use readable {fix}</span>')
-                btn.get_child().show()
+                btn.get_child().show_all()
                 btn.show()  # (show_all is ignored on a no-show-all widget)
             else:
                 btn.hide()
@@ -304,7 +305,9 @@ class Preview(Gtk.Box):
         self.pack_start(_label("Now showing", "pv-text", wrap=False, weight="semibold"), False, False, 0)
         card = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         card.get_style_context().add_class("pv-card")
-        card.pack_start(_label("Restart video", "pv-text", wrap=False, weight="bold"), False, False, 0)
+        head = ui_icons.IconLabel("Restart video", "pv-text", markup=_bold("Restart video"))
+        head.set_halign(Gtk.Align.START)
+        card.pack_start(head, False, False, 0)
         card.pack_start(_label("Use if the screen looks stuck.", "pv-muted", wrap=False), False, False, 0)
         self.pack_start(card, False, False, 0)
         self.pack_start(_label("Message text in the button color", "pv-msg", wrap=False, weight="bold"),
@@ -312,7 +315,8 @@ class Preview(Gtk.Box):
         pill = Gtk.Box()
         pill.get_style_context().add_class("pv-pill")
         pill.set_halign(Gtk.Align.START)
-        pill.add(_label("Done – back to fullscreen", "pv-pill-text", wrap=False, weight="bold"))
+        pill.add(ui_icons.IconLabel("Start fullscreen playback", "pv-pill-text",
+                                    markup=_bold("Start fullscreen playback")))
         self.pack_start(pill, False, False, 0)
         chips = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
         chips.pack_start(_label("  Menu highlight  ", "pv-hl", wrap=False, weight="semibold"), False, False, 0)
@@ -333,6 +337,8 @@ class Preview(Gtk.Box):
         box.pv-pill {{ background-image: linear-gradient(to top, {theme['accent_deep']}, {theme['accent']});
                       border-radius: 999px; padding: 8px 20px; }}
         label.pv-pill-text {{ color: {theme['on_accent']}; font-size: 12pt; }}
+        box.pv-pill image.lucide {{ color: {theme['on_accent']}; }}
+        box.pv-card image.lucide {{ color: {theme['text']}; }}
         label.pv-msg {{ color: {theme['accent']}; font-size: 12pt; }}
         label.pv-desk {{ background-color: {desktop}; color: #ffffff; font-size: 11pt; padding: 4px 8px;
                         border-radius: 6px; border: 1px solid alpha(#ffffff, 0.25); }}
@@ -445,11 +451,11 @@ class SettingsBase(staff_admin.AdminWindow):
         raise NotImplementedError
 
     def drive_picker(self):
-        """The USB data drive: videos, the display's state and Performance History live on it, so they survive
-        read-only mode and restarts. Required: setup can't finish without one."""
+        """The USB data drive: videos, the display's state and Performance history live on it, so they survive
+        Read-only Mode and restarts. Required: setup can't finish without one."""
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         box.set_margin_top(6)
-        box.pack_start(_label("USB data drive (videos, the display's state and Performance History)", "field-label",
+        box.pack_start(_label("USB data drive (videos, the display's state and Performance history)", "field-label",
                               weight="semibold"), False, False, 0)
         mount = loop_profile.data_mount()
         group, self.drive_buttons = None, {}
@@ -461,12 +467,12 @@ class SettingsBase(staff_admin.AdminWindow):
         if not options:
             row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=12)
             row.pack_start(_label("No USB drive found. Plug one in (it will be erased), then click Look again. "
-                                  "Read-only mode keeps the SD card safe, so the videos and history need it.",
+                                  "Read-only Mode keeps the SD card safe, so the videos and history need it.",
                                   "warn"), True, True, 0)
             again = Gtk.Button()
             again.get_style_context().add_class("choose")
             again.set_valign(Gtk.Align.CENTER)
-            again.add(_label("Look again", "choose", wrap=False, weight="semibold"))
+            again.add(ui_icons.IconLabel("Look again", "choose", markup=_bold("Look again", "semibold")))
             again.connect("clicked", lambda *_: self.refresh_drives())
             row.pack_start(again, False, False, 0)
             box.pack_start(row, False, False, 0)
@@ -583,9 +589,45 @@ class SetupWizard(SettingsBase):
         self.notes_win = None
         self.about_win = self.help_win = None
         self.step = 0
+        self.reached = 0  # the furthest step reached through Next: every step up to it is complete
         self.show_step()
 
     def show_current(self):
+        self.show_step()
+
+    def step_pill(self, i, name, active):
+        """A clickable step. Steps up to the furthest one reached can be opened; later ones are muted and
+        ignore clicks, so a step opens only once the one before it is complete."""
+        pill = Gtk.Button()
+        pill.set_relief(Gtk.ReliefStyle.NONE)
+        ctx = pill.get_style_context()
+        ctx.add_class("step")
+        done = active is not None and active >= len(WIZARD_STEPS)  # set up: nothing left to go back to
+        open_ = not done and i <= self.reached and i != active
+        if active is not None and i < active:
+            ctx.add_class("step-done")
+        elif i == active:
+            ctx.add_class("step-active")
+        if not open_ and i != active:
+            ctx.add_class("step-muted")
+            pill.set_tooltip_text("Complete the steps before this one first.")
+        pill.add(ui_icons.IconLabel(name, size="pill"))
+        pill.connect("clicked", lambda *_a: self.goto_step(i) if open_ else None)
+        return pill
+
+    def goto_step(self, i):
+        if self.busy or i == self.step or i > self.reached:
+            return
+        if self.step in PAGE_OF_STEP and i > self.step:  # going forward: this page must be complete first
+            page = PAGE_OF_STEP[self.step]
+            mine, _all = self.page_errors(page)
+            if page == "display" and self.drive_problem():
+                mine["drive"] = self.drive_problem()
+            if mine:
+                return self.unbusy(next(iter(mine.values())))
+        elif self.form is not None:
+            self.form.read()
+        self.step = i
         self.show_step()
 
     def page(self, *args, **kwargs):
@@ -598,7 +640,7 @@ class SetupWizard(SettingsBase):
             b = Gtk.Button()
             b.get_style_context().add_class("about-link")
             b.set_relief(Gtk.ReliefStyle.NONE)
-            b.add(_label(text, "about-link", wrap=False, weight="semibold"))
+            b.add(ui_icons.IconLabel(text, "about-link", markup=_bold(text, "semibold")))
             b.connect("clicked", lambda *_a, fn=fn: fn())
             links.pack_start(b, False, False, 0)
         self.foot.pack_start(links, False, False, 0)
@@ -627,6 +669,7 @@ class SetupWizard(SettingsBase):
         self.about_win.connect("destroy", lambda *_: setattr(self, "about_win", None))
 
     def show_step(self):
+        self.reached = max(self.reached, self.step)
         self.form = None if self.step in (0, 6) else self.form
         if self.step == 0:
             return self.p_start()
@@ -693,17 +736,17 @@ class SetupWizard(SettingsBase):
         self.page("Review and save", "Check your settings, then save. Saving asks for the administrator password, "
                   "then sets up the display (about a minute; making the idle video takes the longest).",
                   WIZARD_STEPS, 6, extra=panel, warn=self.warnings(),
-                  danger=("Read-only mode is on, so settings can't be saved. Turn it off first (Staff Display "
+                  danger=("Read-only Mode is on, so settings can't be saved. Turn it off first (Staff Display "
                           "Tools > Update Software)." if rw else None),
                   buttons=[("Back", self.back, "ghost", ""),
                            ("Save and set up", lambda: self.save(self.p_done), "primary", "Setting up…")])
 
     def p_done(self, out):
         self.page("This display is set up",
-                  "Videos, downloads, the display's state and Performance History are kept on the USB data drive. "
+                  "Videos, downloads, the display's state and Performance history are kept on the USB data drive. "
                   "Use Get a new video in Staff Display Tools to add the first video from your library. "
-                  "Next, open Setup & burn-in and start the burn-in test: it switches the display to read-only "
-                  "mode, which protects the SD card, and Go Live keeps it there.",
+                  "Next, open Setup & Burn-in and start the burn-in test: it switches the display to Read-only "
+                  "Mode, which protects the SD card, and going live keeps it there.",
                   WIZARD_STEPS, 7, buttons=[("Close", self.destroy, "primary", "")])
 
 
@@ -726,7 +769,7 @@ class SettingsWindow(SettingsBase):
             b.get_style_context().add_class("tab")
             if pid == self.page_id:
                 b.get_style_context().add_class("tab-active")
-            b.add(_label(title, "tab", wrap=False, weight="semibold"))
+            b.add(ui_icons.IconLabel(title, "tab", size="pill", markup=_bold(title, "semibold")))
             b.connect("clicked", lambda _b, pid=pid: self.switch(pid))
             row.pack_start(b, False, False, 0)
         return row
@@ -752,7 +795,8 @@ class SettingsWindow(SettingsBase):
             wiz.get_style_context().add_class("choose")
             wiz.set_halign(Gtk.Align.START)
             wiz.set_margin_top(10)
-            wiz.add(_label("Open LOOP Setup (step by step)", "choose", wrap=False, weight="semibold"))
+            wiz.add(ui_icons.IconLabel("Open LOOP Setup (step by step)", "choose",
+                                       markup=_bold("Open LOOP Setup (step by step)", "semibold")))
             wiz.connect("clicked", lambda *_: self.open_wizard())
             box.pack_start(wiz, False, False, 0)
         else:
@@ -784,8 +828,8 @@ class SettingsWindow(SettingsBase):
         self.show_page(self.page_id, "Settings saved. Staff Display Tools shows them the next time it opens.")
 
     def p_readonly(self):
-        self.page("Settings need Read/Write mode",
-                  "Like software updates, settings can only be saved while read-only mode is off; otherwise they "
+        self.page("Settings need Read/write Mode",
+                  "Like software updates, settings can only be saved while Read-only Mode is off; otherwise they "
                   "would be lost at the next restart. Update Software turns it off (one restart), lets you change "
                   "settings, and turns it back on.",
                   buttons=[("Close", self.destroy, "ghost", ""),

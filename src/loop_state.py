@@ -4,7 +4,7 @@
 """Shared state for a LOOP display Pi: Setup/Production mode, burn-in test, software updates.
 
 Everything lives on the USB data drive (<data mount>/state, /mnt/loopdata by default), which stays writable even when
-the OS is in read-only mode, so it survives restarts. Used by the player, the Performance
+the OS is in Read-only Mode, so it survives restarts. Used by the player, the Performance
 History recorder and Staff Display Tools. Standard library only.
 
 Files (JSON):
@@ -37,7 +37,7 @@ DEFAULT_SETTINGS = {
     "max_mem_pct": 80.0,     # memory in use must stay strictly below
     "max_drop_pct": 0.001,   # dropped / (shown + dropped) must stay strictly below
     "require_uptime": True,  # no reboots, power cycles, video restarts or logging gaps
-    "read_only": True,       # run the test in read-only mode (recommended)
+    "read_only": True,       # run the test in Read-only Mode (recommended)
 }
 
 # Update workflow stages (Production Mode, or Setup Mode with read-only on):
@@ -46,7 +46,7 @@ DEFAULT_SETTINGS = {
 #   installing      updates being installed (if the Pi restarts now: "interrupted")
 #   interrupted     the Pi restarted mid-install; repair before anything else
 #   installed       updates installed; restart pending
-#   post_update     after the update restart; choose Check For Updates or Enable Read-Only
+#   post_update     after the update restart; choose Check for updates or Set Read-only
 #   ro_on_pending   read-only switched on for next boot; restart to finish (then the file goes)
 # Each stage records the boot it was set in; settle() moves it on after a restart.
 # "origin" is "ro" (started from read-only) or "rw" (Setup Mode already read/write).
@@ -96,7 +96,7 @@ def ro_now():
 
 
 def data_kept():
-    """False when the USB data drive sits under read-only mode's RAM layer (overlayroot recurse=1, for example after
+    """False when the USB data drive sits under Read-only Mode's RAM layer (overlayroot recurse=1, for example after
     switching read-only on with raspi-config directly): then nothing written to it survives a restart."""
     try:
         out = subprocess.run(["findmnt", "-n", "-o", "FSTYPE", DATA], capture_output=True, text=True).stdout
@@ -180,7 +180,7 @@ def promote_pending_test():
     want_ro = t.get("settings", b["settings"]).get("read_only", True)
     if want_ro != ro_now():
         t = dict(t, state="aborted", stopped=now_iso(),
-                 reason=f"Read-only mode was {'off' if want_ro else 'still on'} after the restart.")
+                 reason=f"Read-only Mode was {'off' if want_ro else 'still on'} after the restart.")
         save_burnin(test=t)
         return t
     return start_test_now(t.get("settings", b["settings"]))
@@ -196,7 +196,7 @@ def stop_test(reason="Stopped"):
 
 
 def retention_hours():
-    """How much Performance History to keep: 24 h in production; during setup, at least
+    """How much Performance history to keep: 24 h in production; during setup, at least
     7 days and at least the burn-in test length plus a day."""
     if mode() == "production":
         return 24.0
@@ -217,7 +217,7 @@ def settle():
         return d
     nxt, note = stage, None
     if stage == "ro_off_pending":
-        nxt, note = ("ready", None) if not ro_now() else ("ro_off_pending", "Read-only mode was still on after the restart.")
+        nxt, note = ("ready", None) if not ro_now() else ("ro_off_pending", "Read-only Mode was still on after the restart.")
     elif stage == "installing":
         nxt = "interrupted"
     elif stage == "installed":
@@ -226,7 +226,7 @@ def settle():
         if ro_now():
             remove(MAINT_FILE)
             return {}
-        nxt, note = "post_update", "Read-only mode did not turn on after the restart. Try again."
+        nxt, note = "post_update", "Read-only Mode did not turn on after the restart. Try again."
     d.update(stage=nxt, boot=boot_id(), updated_at=now_iso(), note=note)
     try:
         write_json(MAINT_FILE, d)

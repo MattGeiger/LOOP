@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
-"""Performance History logger for LOOP display Pis (Pi 4 + VLC 3.x).
+"""Performance history logger for LOOP display Pis (Pi 4 + VLC 3.x).
 
 Every INTERVAL seconds, appends one CSV row to ~/burnin/logs/burnin-YYYY-MM-DD.csv with:
   - SoC temperatures (CPU via thermal_zone0, GPU via `vcgencmd measure_temp`)
@@ -16,7 +16,7 @@ accumulates deltas and treats a counter that goes down as a reset. Drops in the 
 Black box: a daily file is deleted once its newest entry is older than the retention window
 (loop_state.retention_hours(): 24 h in Production, 7+ days in Setup; else KEEP_HOURS),
 so at least that much history is always on hand and storage stays small (~2.5 MB a day). Shown to
-staff as "Performance History" in Staff Display Tools.
+staff as "Performance history" in Staff Display Tools.
 
 Standard library only. The VLC HTTP password is read from ~/.config/vlc/vlcrc.
 """

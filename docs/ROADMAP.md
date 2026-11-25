@@ -4,13 +4,13 @@
 
 - Zero-touch playback of the newest video on the USB data drive, with a backup video and a branded idle screen.
 - Staff Display Tools: mouse-only, instant feedback, Help with screenshots, Display status, Performance History.
-- Setup Mode with configurable burn-in tests, Go Live, and Update Software with read-only mode around it.
+- Setup Mode with configurable burn-in tests, going live, and Update Software with Read-only Mode around it.
 - Profiles and site files for any organization, a setup wizard and Settings, WCAG 2.2 contrast checks with
   readable-shade suggestions.
 - A Debian package that installs and removes cleanly, and a Pi Imager image with LOOP's boot screen.
 - Tests and CI on every push.
 
-## 1.1.0 (planned)
+## 1.1.0
 
 A shared visual language: Lucide icons on every interactive control, clickable LOOP Setup steps, and consistent
 wording. See [DESIGN_LANGUAGE.md](DESIGN_LANGUAGE.md) for the icon table, the rules, and the renamed controls.

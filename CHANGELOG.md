@@ -4,6 +4,38 @@ All notable changes to LOOP. Versions follow [semantic versioning](https://semve
 
 ## [Unreleased]
 
+## [1.1.0] · 2026-11-25
+
+A shared visual language for every window: icons with fixed meanings, clickable setup steps, and consistent
+wording. [docs/DESIGN_LANGUAGE.md](docs/DESIGN_LANGUAGE.md) describes it.
+
+### Added
+
+- Lucide icons on every button, card, link, step and tab, from one icon table (`src/ui_icons.py`). Each icon is
+  drawn in its control's text color at the window's scale, and a spinning loader replaces it while a control
+  works. The icons are bundled in `src/icons/` (Lucide 1.80.0; GitHub from 1.0.0; ISC License), and Lucide is
+  credited in About.
+- LOOP Setup's steps are clickable. Completed steps open again; a step opens only once the one before it is
+  complete, and later steps are muted and ignore clicks.
+- Settings tabs and Update Software's steps show the same icons. Update Software's steps stay progress markers.
+- Tests: `test_icons.py` keeps the icon table, the bundled icons and the design document in step;
+  `test_contrast.py` checks icon colors for 3:1 contrast.
+
+### Changed
+
+- Renamed: **Done – back to fullscreen** is now **Start fullscreen playback**; **Finish Setup (Go Live)** is now
+  **Finish setup (go live)**; **Performance History** is now **Performance history**; the **Setup & burn-in**
+  button is now **Setup & Burn-in**.
+- Update Software's steps are now **Read/write Mode**, **Check for updates**, **Set Read-only Mode** and
+  **Return to video**.
+- Update Software's buttons:
+  - **Enable Read-Only Mode** is now **Set Read-only Mode**.
+  - **Skip updates – Enable Read-Only Mode** is now **Skip updates & set Read-only Mode**.
+  - **Finish – resume video** is now **Cancel** on the update step and **Done** when updates are finished.
+  - **Check For Updates** is now **Check for updates**, and **Update All** is now **Update all**.
+- Wording is in sentence case, apart from a short list of proper terms (for example Read-only Mode and Setup
+  Mode).
+
 ## [1.0.0] · 2026-11-25
 
 First release.

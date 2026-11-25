@@ -29,11 +29,11 @@ LOOP is part of the same family as LOTTO and FEED, by Matt Geiger, Temple Consul
   link: SharePoint, Google Drive, a website) in a locked-down private browser. Nothing is pushed to the screen
   automatically.
 - **Staff Display Tools.** Get a new video, open the videos folder, show the idle screen, restart the video,
-  display status, Performance History, Help and About, with instant click feedback.
-- **Performance History.** Every 5 seconds: temperatures, throttling, memory and VLC frame statistics, kept
+  display status, Performance history, Help and About, with instant click feedback.
+- **Performance history.** Every 5 seconds: temperatures, throttling, memory and VLC frame statistics, kept
   7+ days in Setup Mode and 24 hours in Production Mode.
 - **Setup Mode and burn-in.** A configurable test (12–96 h; temperature, memory, dropped-frame and uptime
-  limits) judged automatically, then **Finish Setup (Go Live)**.
+  limits) judged automatically, then **Finish setup (go live)**.
 - **Read-only operation.** The OS runs read-only so power cuts cannot corrupt it; videos, state and history live
   on the USB drive. **Update Software** handles the read/write window with the administrator password.
 
@@ -51,7 +51,7 @@ Staff run the display from **Staff Display Tools**, over Raspberry Pi Connect, w
 |---|---|
 | ![The Colors step of LOOP Setup, suggesting readable shades beside a live preview](docs/screenshots/setup-wizard-colors.png) | ![Setup and Burn-in: test length and limits for temperature, memory and dropped frames](docs/screenshots/burn-in.png) |
 
-| Update Software around read-only mode | Help with screenshots |
+| Update Software around Read-only Mode | Help with screenshots |
 |---|---|
 | ![Update Software: four steps, with updates grouped by system, VLC, Pi Connect and Chromium](docs/screenshots/update-software.png) | ![A Help guide for changing the video, with steps and a contents list](docs/screenshots/help.png) |
 
@@ -74,7 +74,7 @@ organization name, link or hostname is written into `src/`.
 
 | Path | Contents |
 | --- | --- |
-| `src/` | Player, Performance History, Staff Display Tools, admin windows, Help guides, privileged helper, setup scripts |
+| `src/` | Player, Performance history, Staff Display Tools, admin windows, Help guides, privileged helper, setup scripts |
 | `profiles/wth/` | William Temple House profile and branding assets (not open source; see TRADEMARKS.md) |
 | `profiles/default/` | LOOP's default profile: TemplePDX.com branding (Twilight Ember), used when no organization profile is installed, plus an example site file |
 | `assets/temple/` | Temple Consulting logos for the About window and this README |

@@ -19,6 +19,7 @@ import re
 from gi.repository import GdkPixbuf, GLib, Gtk
 
 import loop_profile
+import ui_icons
 import ui_screen
 
 HELP_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "help")
@@ -50,6 +51,8 @@ button.help-toc, button.help-back, button.help-link { background: none; border: 
 button.help-toc label { font-size: 11pt; color: @text_muted@; }
 button.help-toc:hover label, button.help-back:hover label, button.help-link:hover label { color: @link@; }
 button.help-back label { font-size: 11pt; color: @text@; }
+button.help-back image.lucide, button.help-nav image.lucide { color: @text_body@; }
+button.help-back:hover image.lucide, button.help-nav:hover image.lucide { color: @link@; }
 button.help-link label { font-size: 12pt; color: @link@; }
 button.help-nav {
   background-image: linear-gradient(to top, @card_bottom@, @surface@);
@@ -165,7 +168,9 @@ class HelpWindow(Gtk.Window):
 
     def _top_bar(self, back_text, back_fn, meta=""):
         bar = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=8)
-        bar.pack_start(_flat("help-back", _label(f'<span weight="semibold">‹  {back_text}</span>', "help-p"),
+        icon = ui_icons.ICONS["Close"] if back_text == "Close" else ui_icons.ICONS["Back"]
+        bar.pack_start(_flat("help-back", ui_icons.IconLabel(back_text, "help-p", icon=icon,
+                                                              markup=f'<span weight="semibold">{back_text}</span>'),
                              back_fn), False, False, 0)
         if meta:
             bar.pack_end(_label(meta, "help-meta", xalign=1.0, wrap=False), False, False, 0)
@@ -275,9 +280,10 @@ class HelpWindow(Gtk.Window):
     def _nav(self, kicker, title, fn, xalign):
         box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=2)
         box.pack_start(_label(kicker, "help-meta", xalign=xalign, wrap=False), False, False, 0)
-        arrow = ("‹  " if xalign == 0.0 else "") + title + ("  ›" if xalign == 1.0 else "")
-        box.pack_start(_label(f'<span weight="semibold">{inline(arrow)}</span>', "help-p", xalign=xalign,
-                              wrap=False), False, False, 0)
+        row = ui_icons.IconLabel(title, "help-p", icon=ui_icons.ICONS[kicker],
+                                 markup=f'<span weight="semibold">{inline(title)}</span>')
+        row.set_halign(Gtk.Align.START if xalign == 0.0 else Gtk.Align.END)
+        box.pack_start(row, False, False, 0)
         return _flat("help-nav", box, fn)
 
     def _image(self, rel, alt):

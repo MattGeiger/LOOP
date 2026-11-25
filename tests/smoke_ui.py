@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
-"""Exercise Staff Tools + IT windows with a fake GTK, to catch Python-level mistakes."""
+"""Exercise Staff Tools and the admin windows with a fake GTK, to catch Python-level mistakes."""
 import sys, types, os, tempfile
 from unittest import mock
 SRC = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "src")

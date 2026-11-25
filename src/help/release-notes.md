@@ -2,6 +2,12 @@
 
 What's new in LOOP, newest first.
 
+## Version 1.1 — November 25, 2026
+
+- Every button has an icon, and each icon means the same thing everywhere.
+- Click a step at the top of LOOP Setup to go back to it.
+- Clearer button names, such as Start fullscreen playback and Finish setup (go live).
+
 ## Version 1.0 — November 25, 2026
 
 - The video loops by itself and switches to a new download when the current loop ends.
