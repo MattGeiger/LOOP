@@ -1,0 +1,20 @@
+#cloud-config
+# loop-sim first boot (cloud-init NoCloud). make-seed.sh fills @PASSWORD_HASH@ and @SSH_KEY@.
+hostname: loop-sim
+preserve_hostname: false
+users:
+  - name: loop
+    gecos: LOOP desktop user
+    groups: [sudo, video, audio, plugdev, users, input, render, netdev]
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: "@PASSWORD_HASH@"
+    ssh_authorized_keys:
+      - "@SSH_KEY@"
+ssh_pwauth: false
+package_update: true
+packages: [qemu-guest-agent, openssh-server, spice-vdagent, curl, ca-certificates, gnupg, rsync]
+runcmd:
+  - [systemctl, enable, --now, qemu-guest-agent]
+  - [systemctl, enable, --now, ssh]
+final_message: "loop-sim ready after $UPTIME seconds"

@@ -1,0 +1,17 @@
+{
+  "identity": {
+    "contact": "the front desk manager"
+  },
+  "content": {
+    "library_url": "https://example.org/videos"
+  },
+  "displays": {
+    "lobby-display": { "orientation": "landscape", "label": "Lobby" },
+    "window-display": { "orientation": "portrait-cw", "label": "Front window" }
+  },
+  "system": {
+    "data_mount": "/mnt/loopdata",
+    "data_label": "LOOPDATA",
+    "usb_model": ""
+  }
+}

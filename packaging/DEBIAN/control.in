@@ -1,0 +1,18 @@
+Package: loop-display
+Version: @VERSION@
+Section: misc
+Priority: optional
+Architecture: all
+Maintainer: Matt Geiger <4166270+MattGeiger@users.noreply.github.com>
+Depends: python3 (>= 3.11), python3-gi, gir1.2-gtk-3.0, fonts-inter, librsvg2-common, vlc, ffmpeg, pkexec, polkitd, util-linux, fdisk, e2fsprogs, systemd, desktop-file-utils
+Recommends: chromium, raspi-config, overlayroot, wlr-randr, grim
+Homepage: https://github.com/MattGeiger/LOOP
+Bugs: https://github.com/MattGeiger/LOOP/issues
+Description: LOOP (Local Outreach on Pi): zero-touch outreach video displays
+ Turns a Raspberry Pi running Raspberry Pi OS with the desktop into a dependable
+ outreach display. VLC loops the newest video from a USB drop folder through
+ restarts, power cuts and internet outages. Staff Display Tools gives staff
+ mouse-only controls over Raspberry Pi Connect, with guided software updates,
+ read-only operation, burn-in testing and Performance History for IT.
+ .
+ After installing, run: sudo loop-setup --profile <name> --site <site.json>

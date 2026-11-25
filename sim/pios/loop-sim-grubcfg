@@ -1,0 +1,7 @@
+#!/bin/sh
+# Write the GRUB menu straight from /etc/grub.d/09_loop_sim (which follows /boot/firmware/cmdline.txt).
+# update-grub cannot run while the root filesystem is an overlay (read-only mode); this works in both modes.
+set -e
+CFG=/boot/efi/grub/grub.cfg
+{ echo "set timeout=1"; /etc/grub.d/09_loop_sim; } > "$CFG.new"
+mv "$CFG.new" "$CFG"

@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "identity": {
+    "organization": "",
+    "displays_name": "the displays",
+    "launcher_name": "Staff Tools",
+    "branding_notice": ""
+  },
+  "content": {
+    "library_name": "the video library",
+    "bookmark_name": "Video library",
+    "keep_videos": 3
+  }
+}

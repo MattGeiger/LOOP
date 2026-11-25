@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=LOOP Setup
+Comment=Opens the LOOP setup wizard at login until this display is set up
+Exec=loop-setup-wizard --if-needed
+Terminal=false
+NoDisplay=true

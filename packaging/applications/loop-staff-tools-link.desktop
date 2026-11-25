@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Staff Display Tools
+Exec=loop-staff-tools %u
+Icon=/etc/loop/branding/staff-icon.png
+Terminal=false
+NoDisplay=true
+MimeType=x-scheme-handler/loop-staff-tools;

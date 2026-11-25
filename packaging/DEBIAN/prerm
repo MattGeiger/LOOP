@@ -1,0 +1,24 @@
+#!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
+# loop-display prerm: on removal, stop the player and Performance History and put back each display user's
+# own settings (VLC, Chromium bookmark and downloads, taskbar, desktop look) to what they were before LOOP,
+# wherever they still hold what LOOP set (loop-user-setup --undo). Upgrades keep everything.
+set -e
+[ "$1" = remove ] || exit 0
+users="$(cat /var/lib/loop/display-user 2>/dev/null || true)"
+for h in /home/*; do
+  if [ -e "$h/.local/state/loop/undo.json" ] || [ -e "$h/Desktop/loop-staff-tools.desktop" ]; then
+    users="$users $(stat -c %U "$h")"
+  fi
+done
+for u in $(echo "$users" | tr ' ' '\n' | sort -u); do
+  id "$u" >/dev/null 2>&1 || continue
+  uid="$(id -u "$u")"
+  runuser -u "$u" -- env XDG_RUNTIME_DIR="/run/user/$uid" HOME="$(getent passwd "$u" | cut -d: -f6)" \
+    bash /usr/lib/loop/loop-user-setup --undo 2>&1 | grep -v LOOP_USER_UNDO_DONE | sed 's/^/  /' || true
+  if [ -e /var/lib/loop/linger-by-loop ]; then loginctl disable-linger "$u" 2>/dev/null || true; fi
+done
+rm -f /var/lib/loop/linger-by-loop /var/lib/loop/display-user
+bash /usr/lib/loop/setup_bootsplash.sh --remove 2>&1 | sed 's/^/  /' || true   # Raspberry Pi OS's boot screen back
+exit 0

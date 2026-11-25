@@ -1,0 +1,27 @@
+#!/bin/bash
+# loop-sim wrapper for raspi-config (the real one is diverted to /usr/bin/raspi-config.real).
+# A VM has no Pi boot firmware, so read-only mode uses the same overlayroot package through its
+# config file instead of the Pi kernel command line. /boot/firmware/cmdline.txt is kept in step,
+# so LOOP's checks for "overlayroot=tmpfs" behave as on a Pi. Everything else goes to the real tool.
+set -e
+CMD=/boot/firmware/cmdline.txt
+mkdir -p /boot/firmware; [ -f "$CMD" ] || cat /proc/cmdline > "$CMD"
+if [ "${1:-}" = nonint ]; then
+  case "${2:-}" in
+    enable_overlayfs)
+      dpkg -s overlayroot >/dev/null 2>&1 || apt-get install -y -q overlayroot
+      echo 'overlayroot="tmpfs:recurse=0"' > /etc/overlayroot.local.conf
+      grep -q 'overlayroot=tmpfs' "$CMD" || sed -i '1 s/$/ overlayroot=tmpfs/' "$CMD"
+      update-initramfs -u >/dev/null 2>&1
+      exit 0 ;;
+    disable_overlayfs)
+      # Runs while read-only may be active: write through to the real disk.
+      if [ "$(findmnt -n -o FSTYPE /)" = overlay ]; then
+        overlayroot-chroot sh -c "echo 'overlayroot=\"\"' > /etc/overlayroot.local.conf; sed -i 's/ overlayroot=tmpfs//' $CMD"
+      fi
+      echo 'overlayroot=""' > /etc/overlayroot.local.conf
+      sed -i 's/ overlayroot=tmpfs//' "$CMD"
+      exit 0 ;;
+  esac
+fi
+exec /usr/bin/raspi-config.real "$@"

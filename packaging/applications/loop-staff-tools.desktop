@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Staff Display Tools
+Comment=Change the video, show the idle screen, check the display
+Exec=loop-staff-tools
+Icon=/var/lib/loop/staff-icon.png
+Terminal=false
+Categories=Utility;

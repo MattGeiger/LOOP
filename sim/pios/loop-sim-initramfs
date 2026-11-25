@@ -1,0 +1,5 @@
+#!/bin/sh
+# Rebuild the initramfs of every Debian arm64 (VM) kernel, as raspi-config does for the Pi kernels.
+for k in /boot/vmlinuz-*-arm64; do
+  [ -e "$k" ] && update-initramfs -u -k "${k#/boot/vmlinuz-}"
+done

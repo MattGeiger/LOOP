@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=LOOP Setup
+Comment=Set up this Pi as a LOOP display: organization, video library, TV mounting, pictures and colors
+Exec=loop-setup-wizard
+Icon=/usr/share/loop/profiles/default/staff-icon.png
+Terminal=false
+Categories=Settings;

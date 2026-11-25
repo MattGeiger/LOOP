@@ -1,0 +1,21 @@
+#cloud-config
+# loop-pios first boot, in the form Raspberry Pi Imager writes to /boot/firmware/user-data.
+# make-vm.sh fills @PASSWORD_HASH@ (a throwaway test password) and @SSH_KEY@.
+hostname: loop-pios
+manage_etc_hosts: true
+timezone: America/Los_Angeles
+# keyboard: left out; raspi-config's update_labwc_keyboard fails at first boot in the VM (cosmetic)
+users:
+  - name: loop
+    groups: users,adm,dialout,audio,netdev,video,plugdev,cdrom,games,input,gpio,spi,i2c,render,sudo
+    shell: /bin/bash
+    lock_passwd: false
+    passwd: "@PASSWORD_HASH@"
+    ssh_authorized_keys:
+      - "@SSH_KEY@"
+ssh_pwauth: false
+runcmd:
+  - [/usr/local/sbin/loop-sim-grubcfg]
+  - [systemctl, enable, --now, ssh]
+  - [raspi-config, nonint, do_boot_behaviour, B4]
+  - [loginctl, enable-linger, loop]

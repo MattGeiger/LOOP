@@ -1,0 +1,16 @@
+__pycache__/
+*.pyc
+.DS_Store
+*.log
+*.csv
+/build/
+/dist/
+.env*
+
+# Deployment settings never belong in LOOP (keep them in the organization private repo)
+site.json
+!profiles/example/site.example.json
+sim/out/
+sim/vm/work/
+sim/pios/work/
+dist/

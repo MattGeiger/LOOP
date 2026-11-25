@@ -1,0 +1,6 @@
+{
+  "identity": { "contact": "the LOOP test bench" },
+  "content": { "library_url": "https://example.org/" },
+  "displays": { "loop-sim": { "orientation": "landscape", "label": "Simulator" } },
+  "system": { "data_mount": "/mnt/loopdata", "data_label": "LOOPDATA", "usb_model": "" }
+}

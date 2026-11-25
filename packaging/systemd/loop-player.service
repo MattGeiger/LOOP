@@ -1,0 +1,11 @@
+[Unit]
+Description=LOOP player: VLC fullscreen loop of the newest video (zero-touch)
+After=graphical-session.target
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/lib/loop/display_player.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=default.target

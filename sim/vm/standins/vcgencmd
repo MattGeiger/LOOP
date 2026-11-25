@@ -1,0 +1,12 @@
+#!/bin/sh
+# loop-sim stand-in for Raspberry Pi's vcgencmd (a VM has no VideoCore).
+# Test hooks: write a temperature to /etc/loop-sim/temp_c (e.g. 81.5) or a flag word to
+# /etc/loop-sim/throttled (e.g. 0x50005) to exercise LOOP's heat and throttle checks.
+T=$(cat /etc/loop-sim/temp_c 2>/dev/null || echo 48.3)
+case "$1" in
+  measure_temp)  echo "temp=${T}'C" ;;
+  get_throttled) echo "throttled=$(cat /etc/loop-sim/throttled 2>/dev/null || echo 0x0)" ;;
+  measure_clock) echo "frequency(0)=1800000000" ;;
+  version)       echo "loop-sim vcgencmd stand-in" ;;
+  *)             echo "loop-sim: vcgencmd '$*' not simulated" >&2; exit 1 ;;
+esac

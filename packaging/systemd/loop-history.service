@@ -1,0 +1,10 @@
+[Unit]
+Description=LOOP Performance History: temperatures, memory and VLC frame drops every 5 s
+
+[Service]
+ExecStart=/usr/bin/python3 /usr/lib/loop/burnin_logger.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=default.target

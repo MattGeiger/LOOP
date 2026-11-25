@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE policyconfig PUBLIC "-//freedesktop//DTD PolicyKit Policy Configuration 1.0//EN"
+ "http://www.freedesktop.org/standards/PolicyKit/1/policyconfig.dtd">
+<!-- Lets Staff Display Tools run the LOOP maintenance helper after the admin password is entered
+     in Raspberry Pi OS's own password dialog. Installed to /usr/share/polkit-1/actions/. -->
+<policyconfig>
+  <vendor>LOOP (Temple Consulting, LLC.)</vendor>
+  <action id="com.templepdx.loop.maintenance">
+    <description>LOOP display maintenance</description>
+    <message>Changing this display (settings, software updates, read-only mode, burn-in, Go Live) needs the administrator password.</message>
+    <defaults>
+      <allow_any>auth_admin</allow_any>
+      <allow_inactive>auth_admin</allow_inactive>
+      <allow_active>auth_admin_keep</allow_active>
+    </defaults>
+    <annotate key="org.freedesktop.policykit.exec.path">/usr/libexec/loop/loop-maintenance-root</annotate>
+  </action>
+</policyconfig>

@@ -1,0 +1,8 @@
+# loop-pios: wired DHCP, as Pi Imager leaves it when no Wi-Fi is set.
+network:
+  version: 2
+  ethernets:
+    all-wired:
+      match: {name: "en*"}
+      dhcp4: true
+      optional: true

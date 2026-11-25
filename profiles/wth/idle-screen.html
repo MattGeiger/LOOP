@@ -1,0 +1,31 @@
+<!doctype html>
+<!-- WTH display idle screen, 1920x1080. Rendered to PNG with headless Chrome (see render.sh). -->
+<html><head><meta charset="utf-8"><title>WTH Idle Screen</title>
+<style>
+  :root { --navy:#173F6E; --blue:#2762A2; --teal:#3890AB; --aqua:#7ACCC8; --sun:#FFDF4F; --white:#FFFFFF; }
+  html,body { margin:0; width:1920px; height:1080px; overflow:hidden; }
+  body { background:var(--navy); font-family:"Avenir Next","Helvetica Neue",sans-serif; color:var(--white); position:relative; }
+  .mark { position:absolute; right:-330px; bottom:-160px; height:1120px; }
+  .col { position:absolute; left:140px; top:120px; bottom:110px; width:960px; display:flex; flex-direction:column; }
+  .logo { width:600px; }
+  .msg { margin-top:auto; margin-bottom:auto; }
+  h1 { margin:0; font-size:84px; line-height:1.08; font-weight:700; letter-spacing:-0.5px; }
+  .sub { margin:28px 0 0; width:860px; font-size:38px; line-height:1.35; font-weight:500; color:var(--aqua); }
+  .bar { width:96px; height:8px; border-radius:4px; background:var(--sun); margin-bottom:28px; }
+  .store { font-size:34px; font-weight:600; }
+  .hours { margin-top:10px; font-size:30px; font-weight:500; opacity:.85; }
+</style></head>
+<body>
+  <img class="mark" src="assets/mark-color.svg" alt="">
+  <div class="col">
+    <img class="logo" src="assets/logo-white.svg" alt="William Temple House">
+    <div class="msg">
+      <h1>Every purchase<br>supports our neighbors.</h1>
+      <p class="sub">Providing food, counseling, and connection<br>since 1965.</p>
+    </div>
+    <div>
+      <div class="bar"></div>
+      <div class="store">William Temple House Thrift Store · 2230 NW Glisan St</div>
+    </div>
+  </div>
+</body></html>

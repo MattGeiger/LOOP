@@ -1,0 +1,17 @@
+#!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
+# loop-display postinst: refresh desktop entries; apply settings already in /etc/loop (left there by the
+# setup wizard, Pi Imager first boot, or an earlier install), otherwise explain the next step.
+set -e
+if [ "$1" = configure ]; then
+  update-desktop-database -q /usr/share/applications 2>/dev/null || true
+  if [ -f /etc/loop/profile.json ] && [ -f /etc/loop/site.json ]; then
+    loop-setup --apply || echo "loop-display: loop-setup --apply reported a problem; run it again to see why." >&2
+  else
+    echo "loop-display installed. Next: open LOOP Setup (it also opens by itself at the next login),"
+    echo "  or by hand: sudo loop-setup --profile <name> --site <site.json>"
+    echo "  Profiles: $(ls /usr/share/loop/profiles | tr '\n' ' ')"
+  fi
+fi
+exit 0

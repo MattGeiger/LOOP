@@ -1,0 +1,7 @@
+[Unit]
+Description=loop-sim: rebuild the VM kernel's initramfs and GRUB menu after a cmdline.txt change
+[Service]
+Type=oneshot
+# raspi-config only rebuilds the Pi kernels' initramfs; the VM kernel needs overlayroot's hook too.
+ExecStart=/usr/local/sbin/loop-sim-initramfs
+ExecStart=/usr/local/sbin/loop-sim-grubcfg

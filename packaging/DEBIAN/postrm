@@ -1,0 +1,21 @@
+#!/bin/sh
+# SPDX-License-Identifier: AGPL-3.0-or-later
+# Copyright (C) 2026 Matt Geiger, Temple Consulting, LLC.
+# loop-display postrm: remove what loop-setup created outside the package; purge also removes settings.
+# Videos and history on the USB data drive are never touched.
+set -e
+case "$1" in
+  remove|purge)
+    rm -f /etc/chromium/policies/managed/loop.json /etc/chromium.d/90-loop-no-keyring
+    for h in /home/*; do
+      rm -f "$h/.config/systemd/user/default.target.wants/loop-player.service" \
+            "$h/.config/systemd/user/default.target.wants/loop-history.service" \
+            "$h/Desktop/loop-staff-tools.desktop" 2>/dev/null || true
+    done
+    update-desktop-database -q /usr/share/applications 2>/dev/null || true ;;
+esac
+if [ "$1" = purge ]; then
+  rm -rf /etc/loop /var/lib/loop
+  for h in /home/*; do rm -rf "$h/.local/state/loop"; done  # what --undo could not finish (Chromium was open)
+fi
+exit 0

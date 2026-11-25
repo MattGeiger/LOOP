@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "identity": {
+    "organization": "William Temple House",
+    "website": "https://williamtemple.org",
+    "displays_name": "the Thrift Store displays",
+    "launcher_name": "WTH Staff Tools",
+    "branding_notice": "William Temple House branding is not open source and may not be reused without separate permission."
+  },
+  "content": {
+    "library_name": "Thrift Store Marketing",
+    "bookmark_name": "Thrift Store Marketing (SharePoint)",
+    "keep_videos": 3
+  },
+  "colors": {
+    "desktop": "#173F6E",
+    "accent": "#2762A2"
+  },
+  "theme": {
+    "bg_start": "#0b1324",
+    "bg_mid": "#080f1e",
+    "bg_end": "#050a17",
+    "glow1": "#2b7fff",
+    "glow2": "#7c86ff",
+    "surface": "#0f172b",
+    "card_bottom": "#1d2a35",
+    "card_hover_top": "#13203a",
+    "card_hover_bottom": "#223646",
+    "border": "#0069a8",
+    "border_hover": "#00a6f4",
+    "text": "#ffffff",
+    "text_muted": "#99a1af",
+    "text_soft": "#cbd5e1",
+    "text_body": "#e5e7eb",
+    "link": "#00bcff",
+    "ok": "#7accc8",
+    "danger": "#ffb4a2",
+    "accent": "#ffdf20",
+    "accent_deep": "#fcc800",
+    "on_accent": "#00507f"
+  }
+}
