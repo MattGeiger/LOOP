@@ -70,9 +70,9 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 
 | Step (progress marker) | Icon |
 | --- | --- |
-| Read/write mode | `file-cog` |
+| Read/write Mode | `file-cog` |
 | Check for updates | `refresh-cw` |
-| Set read-only mode | `file-lock` |
+| Set Read-only Mode | `file-lock` |
 | Return to video | `monitor-play` |
 
 | Control | Icon |
@@ -145,7 +145,7 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 | --- | --- |
 | Staff Display Tools | The control window |
 | LOOP Setup | The setup wizard |
-| Read-only Mode | Also in "Skip updates & set Read-only Mode" |
+| Read-only Mode, Read/write Mode | Also in "Set Read-only Mode" and "Skip updates & set Read-only Mode" |
 | Update Software | The window and its button |
 | Raspberry Pi Connect, Raspberry Pi OS, Pi Imager | Brand names |
 
@@ -156,7 +156,7 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 | Done – back to fullscreen | Start fullscreen playback |
 | Finish Setup (Go Live) | Finish setup (go live) |
 | Performance History | Performance history |
-| Update steps: 1 Read/Write, 2 Updates, 3 Read-only, 4 Video back | Read/write mode, Check for updates, Set read-only mode, Return to video |
+| Update steps: 1 Read/Write, 2 Updates, 3 Read-only, 4 Video back | Read/write Mode, Check for updates, Set Read-only Mode, Return to video |
 | Finish – resume video (on the Updates step, when the display was already in read/write mode) | Cancel |
 | Skip updates – Enable Read-Only Mode | Skip updates & set Read-only Mode |
 | Check For Updates, Finish – resume video (last step) | Check for updates, Done |
