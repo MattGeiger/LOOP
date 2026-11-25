@@ -11,6 +11,11 @@ Read [README.md](README.md) and [docs/ROADMAP.md](docs/ROADMAP.md) first.
   narrative or operational data. Deployment notes belong in the organization's own private repository.
 - Organization-specific values (names, logos, colors, wording, the video library URL, device names) belong in a
   profile under `profiles/`, never hard-coded in `src/`.
+- Icons and wording follow [docs/DESIGN_LANGUAGE.md](docs/DESIGN_LANGUAGE.md). Icons are a visual language, not
+  decoration: each one has a fixed meaning, comes from the shared icon table, and every control shows an icon
+  plus text. Check new controls, windows and workflows against it. Use sentence case except the proper terms it
+  lists, and American English spelling. If a new meaning or a casing question comes up, ask the maintainer
+  before adding it.
 - Keep the display mouse-only: keyboard shortcuts are unreliable over Pi Connect from a Mac. Every control
   shows immediate feedback and ignores repeat clicks while busy.
 - Keep both Pi outputs in normal landscape; portrait displays use pre-rotated content.
