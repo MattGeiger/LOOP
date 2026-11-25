@@ -6,7 +6,7 @@ control, window or workflow against this document before adding it. If nothing h
 purpose (add the meaning, then the icon) rather than picking an icon for one button.
 
 The icon table in code (introduced in 1.1.0) is the single source: Staff Display Tools, LOOP Setup, Settings,
-Setup & burn-in and Update Software all read it, so the same action can't drift to a different icon.
+Setup & Burn-in and Update Software all read it, so the same action can't drift to a different icon.
 
 ## Icon families
 
@@ -24,7 +24,7 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 
 | Control | Icon |
 | --- | --- |
-| Setup & burn-in | `monitor-cog` |
+| Setup & Burn-in | `monitor-cog` |
 | Get a new video | `file-video-camera` |
 | Open videos folder | `folder-open` |
 | Show idle screen | `wallpaper` |
@@ -37,7 +37,7 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 | About | `info` |
 | Settings | `settings` |
 
-### Setup & burn-in
+### Setup & Burn-in
 
 | Control | Icon |
 | --- | --- |
@@ -144,6 +144,8 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 | Term | Notes |
 | --- | --- |
 | Staff Display Tools | The control window |
+| Setup & Burn-in | The window and its button |
+| Setup Mode, Production Mode | The display's two modes |
 | LOOP Setup | The setup wizard |
 | Read-only Mode, Read/write Mode | Also in "Set Read-only Mode" and "Skip updates & set Read-only Mode" |
 | Update Software | The window and its button |
@@ -154,6 +156,7 @@ Setup & burn-in and Update Software all read it, so the same action can't drift 
 | Before | After |
 | --- | --- |
 | Done – back to fullscreen | Start fullscreen playback |
+| Setup & burn-in (button) | Setup & Burn-in |
 | Finish Setup (Go Live) | Finish setup (go live) |
 | Performance History | Performance history |
 | Update steps: 1 Read/Write, 2 Updates, 3 Read-only, 4 Video back | Read/write Mode, Check for updates, Set Read-only Mode, Return to video |
